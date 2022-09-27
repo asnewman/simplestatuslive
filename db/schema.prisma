@@ -63,3 +63,35 @@ model Token {
 // enum TokenType {
 //   RESET_PASSWORD
 // }
+
+model Project {
+  id                Int                 @id @default(autoincrement())
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  name              String
+  ProjectDependency ProjectDependency[]
+}
+
+model Check {
+  id                  Int                @id @default(autoincrement())
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  projectDependencyId Int?
+  run                 Int
+  url                 String
+  pass                Boolean
+  datetime            DateTime
+  ProjectDependency   ProjectDependency? @relation(fields: [projectDependencyId], references: [id])
+  projectId           Int?
+}
+
+model ProjectDependency {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  url       String
+  projectId Int
+  Project   Project? @relation(fields: [projectId], references: [id])
+  Check     Check[]
+}

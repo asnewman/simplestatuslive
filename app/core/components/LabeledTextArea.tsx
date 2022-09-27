@@ -1,7 +1,7 @@
 import { forwardRef, ComponentPropsWithoutRef, PropsWithoutRef } from "react"
 import { useField, UseFieldConfig } from "react-final-form"
 
-export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
+export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
   /** Field name. */
   name: string
   /** Field label. */
@@ -13,7 +13,7 @@ export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElem
   fieldProps?: UseFieldConfig<string>
 }
 
-export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
+export const LabeledTextField = forwardRef<HTMLTextAreaElement, LabeledTextFieldProps>(
   ({ name, label, outerProps, fieldProps, labelProps, ...props }, ref) => {
     const {
       input,
@@ -34,10 +34,10 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
         <div className="mb-2">
           <label {...labelProps}>{label}</label>
         </div>
-        <input className="input mb-4" {...input} disabled={submitting} {...props} ref={ref} />
+        <textarea className="textarea mb-4" {...input} disabled={submitting} {...props} ref={ref} />
 
         {touched && normalizedError && (
-          <div role="alert mb-4" style={{ color: "red" }}>
+          <div role="alert" style={{ color: "red" }}>
             {normalizedError}
           </div>
         )}

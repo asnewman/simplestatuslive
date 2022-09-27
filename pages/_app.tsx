@@ -1,7 +1,8 @@
 import { ErrorFallbackProps, ErrorComponent, ErrorBoundary, AppProps } from "@blitzjs/next"
 import { AuthenticationError, AuthorizationError } from "blitz"
-import React from "react"
+import React, { Suspense } from "react"
 import { withBlitz } from "app/blitz-client"
+import "app/core/styles/index.scss"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -26,7 +27,9 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
-      <Component {...pageProps} />
+      <Suspense fallback="Loading">
+        <Component {...pageProps} />
+      </Suspense>
     </ErrorBoundary>
   )
 }

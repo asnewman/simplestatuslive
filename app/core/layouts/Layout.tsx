@@ -13,7 +13,7 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {children}
+      <div className="container is-max-desktop px-5">{children}</div>
     </>
   )
 }

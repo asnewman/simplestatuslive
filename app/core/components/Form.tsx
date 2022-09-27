@@ -40,16 +40,10 @@ export function Form<S extends z.ZodType<any, any>>({
           )}
 
           {submitText && (
-            <button type="submit" disabled={submitting}>
+            <button className="button is-dark" type="submit" disabled={submitting}>
               {submitText}
             </button>
           )}
-
-          <style global jsx>{`
-            .form > * + * {
-              margin-top: 1rem;
-            }
-          `}</style>
         </form>
       )}
     />
