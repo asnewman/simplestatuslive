@@ -91,8 +91,15 @@ const NewProjectPage = () => {
             Add dependency
           </button>
         </div>
-        {dependencies.map((d) => (
-          <p>{d.name}</p>
+        {dependencies.map((d, idx) => (
+          <SavedDependency
+            {...d}
+            onDelete={() => {
+              const newDependencies = [...dependencies]
+              newDependencies.splice(idx, 1)
+              setDependencies(newDependencies)
+            }}
+          />
         ))}
       </Form>
       <DependencyModal
@@ -107,6 +114,22 @@ const NewProjectPage = () => {
         </Link>
       </p>
     </Layout>
+  )
+}
+
+interface SavedDependencyProps extends Dependency {
+  onDelete: () => void
+}
+
+const SavedDependency = (props: SavedDependencyProps) => {
+  return (
+    <div className="message">
+      <div className="message-header">
+        <p>{props.name}</p>
+        <button className="delete" aria-label="delete" onClick={props.onDelete}></button>
+      </div>
+      <div className="message-body">{props.url}</div>
+    </div>
   )
 }
 

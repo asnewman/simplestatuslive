@@ -3,6 +3,7 @@ import { AuthenticationError, AuthorizationError } from "blitz"
 import React, { Suspense } from "react"
 import { withBlitz } from "app/blitz-client"
 import "app/core/styles/index.scss"
+import { TerminalContextProvider } from "react-terminal"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -28,7 +29,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
       <Suspense fallback="Loading">
-        <Component {...pageProps} />
+        <TerminalContextProvider>
+          <Component {...pageProps} />
+        </TerminalContextProvider>
       </Suspense>
     </ErrorBoundary>
   )

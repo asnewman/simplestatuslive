@@ -29,6 +29,11 @@ $primary-invert: $pink-invert;
   height: calc(100vh - 83px);
 }
 
+.is-fullheight-100vh-no-footer {
+  height: 100vh;
+  background-color: #263238;
+}
+
 .my-footer {
   background-color: rgb(251, 251, 251);
   text-align: center;
