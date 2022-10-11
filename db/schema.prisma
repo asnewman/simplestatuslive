@@ -70,6 +70,7 @@ model Project {
   updatedAt         DateTime            @updatedAt
   name              String
   ProjectDependency ProjectDependency[]
+  Check             Check[]
 }
 
 model Check {
@@ -78,11 +79,11 @@ model Check {
   updatedAt           DateTime           @updatedAt
   projectDependencyId Int?
   run                 Int
-  url                 String
   pass                Boolean
   datetime            DateTime
   ProjectDependency   ProjectDependency? @relation(fields: [projectDependencyId], references: [id])
   projectId           Int?
+  Project             Project?           @relation(fields: [projectId], references: [id])
 }
 
 model ProjectDependency {

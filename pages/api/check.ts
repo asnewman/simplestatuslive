@@ -7,19 +7,28 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const projects = await db.project.findMany()
 
     for (const project of projects) {
-      // console.info("Checking: " + project.url)
-      // axios
-      //   .get(project.url)
-      //   .then((response) => {
-      //     if (response.status !== 200) {
-      //       saveFailure(project.url, project.id)
-      //     } else {
-      //       saveSuccess(project.url, project.id)
-      //     }
-      //   })
-      //   .catch(() => {
-      //     saveFailure(project.url, project.id)
-      //   })
+      console.info("Checking: " + project.name)
+
+      const dependencies = await db.projectDependency.findMany({
+        where: {
+          projectId: project.id,
+        },
+      })
+
+      for (const dependency of dependencies) {
+        axios
+          .get(dependency.url)
+          .then((response) => {
+            if (response.status !== 200) {
+              saveFailure(dependency.id, project.id)
+            } else {
+              saveSuccess(dependency.id, project.id)
+            }
+          })
+          .catch(() => {
+            saveFailure(dependency.id, project.id)
+          })
+      }
     }
 
     res.statusCode = 200
@@ -31,21 +40,37 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 }
 
-const saveSuccess = (url: string, projectId: number) => {
-  console.info("Check success: " + url)
+const saveSuccess = (dependencyId: number, projectId: number) => {
+  console.info("Check success dependencyId: " + dependencyId)
   db.check
-    .create({ data: { url, pass: true, projectId, run: 0, datetime: new Date() } })
+    .create({
+      data: {
+        pass: true,
+        projectId,
+        projectDependencyId: dependencyId,
+        run: 0,
+        datetime: new Date(),
+      },
+    })
     .catch((e) => {
-      console.warn("Failed to save succes: " + url + e)
+      console.warn("Failed to save success dependencyId: " + dependencyId + e)
     })
 }
 
-const saveFailure = (url: string, projectId: number) => {
-  console.info("Check failure: " + url)
+const saveFailure = (dependencyId: number, projectId: number) => {
+  console.info("Check failure dependencyId: " + dependencyId)
   db.check
-    .create({ data: { url, pass: false, projectId, run: 0, datetime: new Date() } })
+    .create({
+      data: {
+        pass: false,
+        projectId,
+        projectDependencyId: dependencyId,
+        run: 0,
+        datetime: new Date(),
+      },
+    })
     .catch((e) => {
-      console.warn("Failed to save succes: " + url + e)
+      console.warn("Failed to save failure dependencyId: " + dependencyId + e)
     })
 }
 

@@ -6,6 +6,8 @@ const CreateProjectDependency = z.object({
   name: z.string(),
   url: z.string().trim().url(),
   projectId: z.number(),
+  headers: z.record(z.string(), z.any()),
+  data: z.record(z.string(), z.any()),
 })
 
 export default resolver.pipe(
