@@ -1,10 +1,12 @@
 import { useMutation } from "@blitzjs/rpc"
 import createProjectDependency from "app/project-dependencies/mutations/createProjectDependency"
 import createProject from "app/projects/mutations/createProject"
+import updateProject from "app/projects/mutations/updateProject"
 import { ReactTerminal } from "react-terminal"
 
 function Commandline(props) {
   const [createProjectMutation] = useMutation(createProject)
+  const [updateProjectMutation] = useMutation(updateProject)
   const [createProjectDependencyMutation] = useMutation(createProjectDependency)
   // Define commands here
   const commands = {
@@ -85,6 +87,81 @@ function Commandline(props) {
             <br />
             Data: {JSON.stringify(createdDependency.data)}
             <br />
+          </span>
+        )
+      } catch (e) {
+        return e.message
+      }
+    },
+    // Parameters are in the form of a string separated by spaces with values <projectId> <status>
+    "set-project-status": async (parameters) => {
+      if (!parameters) {
+        return "Please provide a <projectId> <status> for your project."
+      }
+
+      const [rawProjectid, ...rawStatus] = parameters.split(" ")
+      const status = rawStatus.join(" ")
+
+      if (!rawProjectid || !status) {
+        return "Please provide a <projectId> <status> for your project."
+      }
+
+      const projectId = parseInt(rawProjectid)
+      if (isNaN(projectId)) {
+        return "Project ID must be a number."
+      }
+
+      try {
+        const updatedProject = await updateProjectMutation({
+          id: projectId,
+          status: status as string,
+        })
+
+        return (
+          <span>
+            Successfully updated! Here are the details:
+            <br />
+            ID: {updatedProject.id}
+            <br />
+            Name: {updatedProject.name}
+            <br />
+            Status: {updatedProject.status}
+          </span>
+        )
+      } catch (e) {
+        return e.message
+      }
+    },
+    "clear-project-status": async (parameters) => {
+      if (!parameters) {
+        return "Please provide a <projectId> for your project."
+      }
+
+      const [rawProjectid] = parameters.split(" ")
+      if (!rawProjectid) {
+        return "Please provide a <projectId> for your project."
+      }
+
+      const projectId = parseInt(rawProjectid)
+      if (isNaN(projectId)) {
+        return "Project ID must be a number."
+      }
+
+      try {
+        const updatedProject = await updateProjectMutation({
+          id: projectId,
+          status: null,
+        })
+
+        return (
+          <span>
+            Successfully updated! Here are the details:
+            <br />
+            ID: {updatedProject.id}
+            <br />
+            Name: {updatedProject.name}
+            <br />
+            Status: {updatedProject.status}
           </span>
         )
       } catch (e) {

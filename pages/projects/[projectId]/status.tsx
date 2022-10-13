@@ -51,13 +51,19 @@ const StatusPage = () => {
       </Head>
       <div className="container is-fullheight-100vh is-max-desktop px-5">
         <h1 className="title is-1 mt-4">{project.name}</h1>
-        {isTherePotentialIssue && (
-          <div className="notification is-warning">Dependency issues detected</div>
+        {isTherePotentialIssue ? (
+          <div className="notification is-warning">
+            Dependency issues detected. There may be interruptions in this service.
+          </div>
+        ) : (
+          <div className="notification is-success">All dependencies are functional.</div>
         )}
-        <div className="block">
-          <strong>Update 7/20 6:43PM - </strong>API is down due to a bad release. We are working on
-          a fix.
-        </div>
+        {project.status && (
+          <div className="block">
+            <strong>Status - </strong>
+            {project.status}
+          </div>
+        )}
         <table className="table is-fullwidth">
           <thead>
             <tr>

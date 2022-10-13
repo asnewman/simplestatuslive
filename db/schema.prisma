@@ -71,6 +71,7 @@ model Project {
   name              String
   ProjectDependency ProjectDependency[]
   Check             Check[]
+  status            String?
 }
 
 model Check {

@@ -4,7 +4,7 @@ import { z } from "zod"
 
 const UpdateProject = z.object({
   id: z.number(),
-  name: z.string(),
+  status: z.string().nullable().optional(),
 })
 
 export default resolver.pipe(
