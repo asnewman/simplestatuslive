@@ -1,14 +1,14 @@
-import { Routes } from "@blitzjs/next";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useMutation } from "@blitzjs/rpc";
-import Layout from "app/core/layouts/Layout";
-import createCheck from "app/checks/mutations/createCheck";
-import { CheckForm, FORM_ERROR } from "app/checks/components/CheckForm";
+import { Routes } from "@blitzjs/next"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useMutation } from "@blitzjs/rpc"
+import Layout from "app/core/layouts/Layout"
+import createCheck from "app/checks/mutations/createCheck"
+import { CheckForm, FORM_ERROR } from "app/checks/components/CheckForm"
 
 const NewCheckPage = () => {
-  const router = useRouter();
-  const [createCheckMutation] = useMutation(createCheck);
+  const router = useRouter()
+  const [createCheckMutation] = useMutation(createCheck)
 
   return (
     <Layout title={"Create New Check"}>
@@ -23,13 +23,13 @@ const NewCheckPage = () => {
         // initialValues={{}}
         onSubmit={async (values) => {
           try {
-            const check = await createCheckMutation(values);
-            router.push(Routes.ShowCheckPage({ checkId: check.id }));
+            const check = await createCheckMutation(values)
+            await router.push(Routes.ShowCheckPage({ checkId: check.id }))
           } catch (error: any) {
-            console.error(error);
+            console.error(error)
             return {
               [FORM_ERROR]: error.toString(),
-            };
+            }
           }
         }}
       />
@@ -40,9 +40,9 @@ const NewCheckPage = () => {
         </Link>
       </p>
     </Layout>
-  );
-};
+  )
+}
 
-NewCheckPage.authenticate = true;
+NewCheckPage.authenticate = true
 
-export default NewCheckPage;
+export default NewCheckPage

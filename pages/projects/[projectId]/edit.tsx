@@ -1,20 +1,20 @@
-import { Suspense } from "react";
-import { Routes } from "@blitzjs/next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useQuery, useMutation } from "@blitzjs/rpc";
-import { useParam } from "@blitzjs/next";
+import { Suspense } from "react"
+import { Routes } from "@blitzjs/next"
+import Head from "next/head"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
 
-import Layout from "app/core/layouts/Layout";
-import getProject from "app/projects/queries/getProject";
-import updateProject from "app/projects/mutations/updateProject";
-import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm";
-import { z } from "zod";
+import Layout from "app/core/layouts/Layout"
+import getProject from "app/projects/queries/getProject"
+import updateProject from "app/projects/mutations/updateProject"
+import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
+import { z } from "zod"
 
 export const EditProject = () => {
-  const router = useRouter();
-  const projectId = useParam("projectId", "number");
+  const router = useRouter()
+  const projectId = useParam("projectId", "number")
   const [project, { setQueryData }] = useQuery(
     getProject,
     { id: projectId },
@@ -22,8 +22,8 @@ export const EditProject = () => {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     }
-  );
-  const [updateProjectMutation] = useMutation(updateProject);
+  )
+  const [updateProjectMutation] = useMutation(updateProject)
 
   return (
     <>
@@ -40,33 +40,31 @@ export const EditProject = () => {
           // TODO use a zod schema for form validation
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and
           //         then import and use it here
-          schema={
-            z.object({
-              name: z.string(),
-              url: z.string().trim().url()
-            })
-          }
+          schema={z.object({
+            name: z.string(),
+            url: z.string().trim().url(),
+          })}
           initialValues={project}
           onSubmit={async (values) => {
             try {
               const updated = await updateProjectMutation({
                 id: project.id,
                 ...values,
-              });
-              await setQueryData(updated);
-              router.push(Routes.ShowProjectPage({ projectId: updated.id }));
+              })
+              await setQueryData(updated)
+              await router.push(Routes.ShowProjectPage({ projectId: updated.id }))
             } catch (error: any) {
-              console.error(error);
+              console.error(error)
               return {
                 [FORM_ERROR]: error.toString(),
-              };
+              }
             }
           }}
         />
       </div>
     </>
-  );
-};
+  )
+}
 
 const EditProjectPage = () => {
   return (
@@ -81,10 +79,10 @@ const EditProjectPage = () => {
         </Link>
       </p>
     </div>
-  );
-};
+  )
+}
 
-EditProjectPage.authenticate = true;
-EditProjectPage.getLayout = (page) => <Layout>{page}</Layout>;
+EditProjectPage.authenticate = true
+EditProjectPage.getLayout = (page) => <Layout>{page}</Layout>
 
-export default EditProjectPage;
+export default EditProjectPage

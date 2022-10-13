@@ -1,19 +1,19 @@
-import { Suspense } from "react";
-import { Routes } from "@blitzjs/next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useQuery, useMutation } from "@blitzjs/rpc";
-import { useParam } from "@blitzjs/next";
+import { Suspense } from "react"
+import { Routes } from "@blitzjs/next"
+import Head from "next/head"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
 
-import Layout from "app/core/layouts/Layout";
-import getCheck from "app/checks/queries/getCheck";
-import updateCheck from "app/checks/mutations/updateCheck";
-import { CheckForm, FORM_ERROR } from "app/checks/components/CheckForm";
+import Layout from "app/core/layouts/Layout"
+import getCheck from "app/checks/queries/getCheck"
+import updateCheck from "app/checks/mutations/updateCheck"
+import { CheckForm, FORM_ERROR } from "app/checks/components/CheckForm"
 
 export const EditCheck = () => {
-  const router = useRouter();
-  const checkId = useParam("checkId", "number");
+  const router = useRouter()
+  const checkId = useParam("checkId", "number")
   const [check, { setQueryData }] = useQuery(
     getCheck,
     { id: checkId },
@@ -21,8 +21,8 @@ export const EditCheck = () => {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     }
-  );
-  const [updateCheckMutation] = useMutation(updateCheck);
+  )
+  const [updateCheckMutation] = useMutation(updateCheck)
 
   return (
     <>
@@ -46,21 +46,21 @@ export const EditCheck = () => {
               const updated = await updateCheckMutation({
                 id: check.id,
                 ...values,
-              });
-              await setQueryData(updated);
-              router.push(Routes.ShowCheckPage({ checkId: updated.id }));
+              })
+              await setQueryData(updated)
+              await router.push(Routes.ShowCheckPage({ checkId: updated.id }))
             } catch (error: any) {
-              console.error(error);
+              console.error(error)
               return {
                 [FORM_ERROR]: error.toString(),
-              };
+              }
             }
           }}
         />
       </div>
     </>
-  );
-};
+  )
+}
 
 const EditCheckPage = () => {
   return (
@@ -75,10 +75,10 @@ const EditCheckPage = () => {
         </Link>
       </p>
     </div>
-  );
-};
+  )
+}
 
-EditCheckPage.authenticate = true;
-EditCheckPage.getLayout = (page) => <Layout>{page}</Layout>;
+EditCheckPage.authenticate = true
+EditCheckPage.getLayout = (page) => <Layout>{page}</Layout>
 
-export default EditCheckPage;
+export default EditCheckPage

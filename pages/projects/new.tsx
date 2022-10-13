@@ -71,7 +71,7 @@ const NewProjectPage = () => {
 
           try {
             const project = await createProjectMutation(values)
-            router.push(Routes.ShowProjectPage({ projectId: project.id }))
+            await router.push(Routes.ShowProjectPage({ projectId: project.id }))
           } catch (error: any) {
             console.error(error)
             return {
@@ -93,6 +93,7 @@ const NewProjectPage = () => {
         </div>
         {dependencies.map((d, idx) => (
           <SavedDependency
+            key={idx}
             {...d}
             onDelete={() => {
               const newDependencies = [...dependencies]

@@ -1,20 +1,20 @@
-import { Suspense } from "react";
-import { Routes } from "@blitzjs/next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useQuery, useMutation } from "@blitzjs/rpc";
-import { useParam } from "@blitzjs/next";
+import { Suspense } from "react"
+import { Routes } from "@blitzjs/next"
+import Head from "next/head"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
 
-import Layout from "app/core/layouts/Layout";
-import getCheck from "app/checks/queries/getCheck";
-import deleteCheck from "app/checks/mutations/deleteCheck";
+import Layout from "app/core/layouts/Layout"
+import getCheck from "app/checks/queries/getCheck"
+import deleteCheck from "app/checks/mutations/deleteCheck"
 
 export const Check = () => {
-  const router = useRouter();
-  const checkId = useParam("checkId", "number");
-  const [deleteCheckMutation] = useMutation(deleteCheck);
-  const [check] = useQuery(getCheck, { id: checkId });
+  const router = useRouter()
+  const checkId = useParam("checkId", "number")
+  const [deleteCheckMutation] = useMutation(deleteCheck)
+  const [check] = useQuery(getCheck, { id: checkId })
 
   return (
     <>
@@ -34,8 +34,8 @@ export const Check = () => {
           type="button"
           onClick={async () => {
             if (window.confirm("This will be deleted")) {
-              await deleteCheckMutation({ id: check.id });
-              router.push(Routes.ChecksPage());
+              await deleteCheckMutation({ id: check.id })
+              await router.push(Routes.ChecksPage())
             }
           }}
           style={{ marginLeft: "0.5rem" }}
@@ -44,8 +44,8 @@ export const Check = () => {
         </button>
       </div>
     </>
-  );
-};
+  )
+}
 
 const ShowCheckPage = () => {
   return (
@@ -60,10 +60,10 @@ const ShowCheckPage = () => {
         <Check />
       </Suspense>
     </div>
-  );
-};
+  )
+}
 
-ShowCheckPage.authenticate = true;
-ShowCheckPage.getLayout = (page) => <Layout>{page}</Layout>;
+ShowCheckPage.authenticate = true
+ShowCheckPage.getLayout = (page) => <Layout>{page}</Layout>
 
-export default ShowCheckPage;
+export default ShowCheckPage
