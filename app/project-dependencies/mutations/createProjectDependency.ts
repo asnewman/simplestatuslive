@@ -1,4 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
+import checkDependency from "app/checks/checkDependency"
 import db from "db"
 import { z } from "zod"
 
@@ -18,6 +19,8 @@ export default resolver.pipe(
     const projectDependency = await db.projectDependency.create({
       data: input,
     })
+
+    checkDependency(projectDependency, input.projectId)
 
     return projectDependency
   }
