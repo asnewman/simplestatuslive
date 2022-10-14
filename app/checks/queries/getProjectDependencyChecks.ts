@@ -9,7 +9,7 @@ const GetProjectDependencyChecks = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetProjectDependencyChecks),
-  resolver.authorize(),
+  // resolver.authorize(),
   async ({ projectId }) => {
     const checksByDependency: Record<number, Check[]> = {}
     const depedencies = await db.projectDependency.findMany({})

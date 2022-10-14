@@ -1,21 +1,13 @@
-import { paginate } from "blitz";
-import { resolver } from "@blitzjs/rpc";
-import db, { Prisma } from "db";
+import { paginate } from "blitz"
+import { resolver } from "@blitzjs/rpc"
+import db, { Prisma } from "db"
 
 interface GetProjectDependenciesInput
-  extends Pick<
-    Prisma.ProjectDependencyFindManyArgs,
-    "where" | "orderBy" | "skip" | "take"
-  > {}
+  extends Pick<Prisma.ProjectDependencyFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
 
 export default resolver.pipe(
-  resolver.authorize(),
-  async ({
-    where,
-    orderBy,
-    skip = 0,
-    take = 100,
-  }: GetProjectDependenciesInput) => {
+  // resolver.authorize(),
+  async ({ where, orderBy, skip = 0, take = 100 }: GetProjectDependenciesInput) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
       items: projectDependencies,
@@ -26,15 +18,14 @@ export default resolver.pipe(
       skip,
       take,
       count: () => db.projectDependency.count({ where }),
-      query: (paginateArgs) =>
-        db.projectDependency.findMany({ ...paginateArgs, where, orderBy }),
-    });
+      query: (paginateArgs) => db.projectDependency.findMany({ ...paginateArgs, where, orderBy }),
+    })
 
     return {
       projectDependencies,
       nextPage,
       hasMore,
       count,
-    };
+    }
   }
-);
+)
