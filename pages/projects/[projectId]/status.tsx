@@ -38,7 +38,14 @@ const StatusPage = () => {
         <tr key={dependency.name}>
           <td>{dependency.name}</td>
           <td>{checks[0]?.pass ? "🟢" : "🔴"}</td>
-          <td>{checks.map((check) => (check.pass ? "🟢" : "🔴"))}</td>
+          <td>
+            {checks.map((check) => (
+              <div key={check.id} className="hover">
+                <a href="#">{check.pass ? "🟢" : "🔴"}</a>
+                <div className="popup">{check.datetime.toString()}</div>
+              </div>
+            ))}
+          </td>
         </tr>
       )
     })
