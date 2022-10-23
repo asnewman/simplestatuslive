@@ -16,7 +16,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       })
 
       for (const dependency of dependencies) {
-        checkDependency(project, dependency)
+        checkDependency(project, dependency).catch((e) => {
+          console.error(`Failed projectId ${project.id} to check dependency ${dependency.id}: ` + e)
+        })
       }
     }
 

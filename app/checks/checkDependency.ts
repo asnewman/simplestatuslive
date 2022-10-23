@@ -80,7 +80,13 @@ const saveFailure = (project: Project, projectDependency: ProjectDependency, use
     to: user.email,
     projectName: project.name,
     projectDependencyName: projectDependency.name,
-  }).send()
+  })
+    .send()
+    .catch((e) => {
+      console.warn(
+        `Failed to send email to ${user.email} for dependencyId error: ${projectDependency.id} ${e}`
+      )
+    })
 }
 
 export default checkDependency

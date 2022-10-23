@@ -26,7 +26,11 @@ export default resolver.pipe(
       data: input,
     })
 
-    checkDependency(project, projectDependency)
+    checkDependency(project, projectDependency).catch((e) => {
+      console.error(
+        `Failed projectId ${project.id} to check dependency ${projectDependency.id}: ` + e
+      )
+    })
 
     return projectDependency
   }

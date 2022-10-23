@@ -29,7 +29,12 @@ export function failedCheckMailer({ to, projectName, projectDependencyName }: Fa
         throw new Error("No production email implementation in mailers/forgotPasswordMailer")
       } else {
         email(msg)
-        console.info("Email sent to: " + to)
+          .then(() => {
+            console.info("Email sent to: " + to)
+          })
+          .catch((e) => {
+            console.error("Failed to send email: " + e)
+          })
       }
     },
   }
