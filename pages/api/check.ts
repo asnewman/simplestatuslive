@@ -16,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       })
 
       for (const dependency of dependencies) {
-        checkDependency(dependency, project.id)
+        checkDependency(project, dependency)
       }
     }
 

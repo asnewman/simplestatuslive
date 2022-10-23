@@ -15,12 +15,18 @@ export default resolver.pipe(
   resolver.zod(CreateProjectDependency),
   resolver.authorize(),
   async (input) => {
+    const project = await db.project.findFirst({ where: { id: input.projectId } })
+
+    if (!project) {
+      throw new Error("Project not found")
+    }
+
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const projectDependency = await db.projectDependency.create({
       data: input,
     })
 
-    checkDependency(projectDependency, input.projectId)
+    checkDependency(project, projectDependency)
 
     return projectDependency
   }
