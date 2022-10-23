@@ -23,19 +23,13 @@ export function failedCheckMailer({ to, projectName, projectDependencyName }: Fa
 
   return {
     async send() {
-      if (process.env.NODE_ENV === "production") {
-        // TODO - send the production email, like this:
-        // await postmark.sendEmail(msg)
-        throw new Error("No production email implementation in mailers/forgotPasswordMailer")
-      } else {
-        email(msg)
-          .then(() => {
-            console.info("Email sent to: " + to)
-          })
-          .catch((e) => {
-            console.error("Failed to send email: " + e)
-          })
-      }
+      email(msg)
+        .then(() => {
+          console.info("Email sent to: " + to)
+        })
+        .catch((e) => {
+          console.error("Failed to send email: " + e)
+        })
     },
   }
 }
