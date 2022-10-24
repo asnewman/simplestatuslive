@@ -85,7 +85,7 @@ const StatusPage = () => {
       <footer className="my-footer">
         <div className="content has-text-centered">
           <p>
-            👀 Monitored by <a>simplestatus.live</a>
+            👀 Monitored by <a>simplestat.us</a>
           </p>
         </div>
       </footer>
