@@ -22,17 +22,23 @@ async function checkDependency(project: Project, dependency: ProjectDependency) 
         if (response.data.includes("All Systems Operational")) {
           saveSuccess(dependency.id, project.id)
         } else {
-          saveFailure(project, dependency, user)
+          saveFailure(project, dependency, user).catch((e) => {
+            console.warn("Failed to save failure dependencyId: " + dependency.id + e)
+          })
         }
       } else if (dependency.url.includes("https://status.slack.com")) {
         if (response.data.includes("Slack is up and running")) {
           saveSuccess(dependency.id, project.id)
         } else {
-          saveFailure(project, dependency, user)
+          saveFailure(project, dependency, user).catch((e) => {
+            console.warn("Failed to save failure dependencyId: " + dependency.id + e)
+          })
         }
       } else {
         if (response.status !== 200) {
-          saveFailure(project, dependency, user)
+          saveFailure(project, dependency, user).catch((e) => {
+            console.warn("Failed to save failure dependencyId: " + dependency.id + e)
+          })
         } else {
           saveSuccess(dependency.id, project.id)
         }
@@ -40,7 +46,9 @@ async function checkDependency(project: Project, dependency: ProjectDependency) 
     })
     .catch((e) => {
       console.info("Check failed: " + dependency.url + " " + e)
-      saveFailure(project, dependency, user)
+      saveFailure(project, dependency, user).catch((e) => {
+        console.warn("Failed to save failure dependencyId: " + dependency.id + e)
+      })
     })
 }
 
@@ -61,8 +69,27 @@ const saveSuccess = (dependencyId: number, projectId: number) => {
     })
 }
 
-const saveFailure = (project: Project, projectDependency: ProjectDependency, user: User) => {
+const saveFailure = async (project: Project, projectDependency: ProjectDependency, user: User) => {
   console.info("Check failure dependencyId: " + projectDependency.id)
+
+  const lastCheck = await db.check.findFirst({
+    where: { projectDependencyId: projectDependency.id },
+    orderBy: { id: "desc" },
+  })
+  if (lastCheck && lastCheck.pass) {
+    failedCheckMailer({
+      to: user.email,
+      projectName: project.name,
+      projectDependencyName: projectDependency.name,
+    })
+      .send()
+      .catch((e) => {
+        console.warn(
+          `Failed to send email to ${user.email} for dependencyId error: ${projectDependency.id} ${e}`
+        )
+      })
+  }
+
   db.check
     .create({
       data: {
@@ -75,17 +102,6 @@ const saveFailure = (project: Project, projectDependency: ProjectDependency, use
     })
     .catch((e) => {
       console.warn("Failed to save failure dependencyId: " + projectDependency.id + e)
-    })
-  failedCheckMailer({
-    to: user.email,
-    projectName: project.name,
-    projectDependencyName: projectDependency.name,
-  })
-    .send()
-    .catch((e) => {
-      console.warn(
-        `Failed to send email to ${user.email} for dependencyId error: ${projectDependency.id} ${e}`
-      )
     })
 }
 
