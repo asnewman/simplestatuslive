@@ -76,6 +76,8 @@ model Project {
   status              String?
   user                User                            @relation(fields: [userId], references: [id])
   userId              Int                             @default(0)
+  email               String                          @default("")
+  slackWebhook        String                          @default("")
 }
 
 model Check {
