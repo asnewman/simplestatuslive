@@ -6,6 +6,7 @@ import getProjectDependencies from "app/project-dependencies/queries/getProjectD
 import getProjectDependencyChecks from "app/checks/queries/getProjectDependencyChecks"
 import Head from "next/head"
 import { useMemo } from "react"
+import getManagedDependenciesForProject from "app/managed-dependencies/queries/getManagedDependenciesForProject"
 
 const StatusPage = () => {
   const projectId = useParam("projectId", "number")
@@ -14,7 +15,7 @@ const StatusPage = () => {
     where: { projectId },
   })
   const [checksByDependency] = useQuery(getProjectDependencyChecks, { projectId })
-
+  const [managedDependencies] = useQuery(getManagedDependenciesForProject, project.id)
   const dependencyMap = useMemo(() => {
     return dependencies.reduce((obj, dependency) => ({ ...obj, [dependency.id]: dependency }), {})
   }, [dependencies])
@@ -51,6 +52,29 @@ const StatusPage = () => {
     })
   }
 
+  function renderManagedDependencies() {
+    if (!managedDependencies) return <></>
+
+    return managedDependencies.map((managedDependency) => {
+      const lastCheck = managedDependency.checks[managedDependency.checks.length - 1] as any
+
+      return (
+        <tr key={managedDependency.name}>
+          <td>{managedDependency.name}</td>
+          <td>{lastCheck.passed ? "🟢" : "🔴"}</td>
+          <td>
+            {managedDependency.checks.slice(-10).map((check: any) => (
+              <div key={check.datetime} className="hover">
+                <a href="#">{check.passed ? "🟢" : "🔴"}</a>
+                <div className="popup">{new Date(check.datetime).toString()}</div>
+              </div>
+            ))}
+          </td>
+        </tr>
+      )
+    })
+  }
+
   return (
     <>
       <Head>
@@ -79,7 +103,10 @@ const StatusPage = () => {
               <th>History</th>
             </tr>
           </thead>
-          <tbody>{renderDependencies()}</tbody>
+          <tbody>
+            {renderDependencies()}
+            {renderManagedDependencies()}
+          </tbody>
         </table>
       </div>
       <footer className="my-footer">
