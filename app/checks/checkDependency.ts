@@ -74,7 +74,7 @@ const saveFailure = async (project: Project, projectDependency: ProjectDependenc
     orderBy: { id: "desc" },
   })
   console.debug("Last check: " + JSON.stringify(lastCheck))
-  if (lastCheck && lastCheck.pass) {
+  if (!lastCheck || (lastCheck && lastCheck.pass)) {
     if (project.email !== "") {
       failedCheckMailer({
         to: project.email,
