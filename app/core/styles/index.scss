@@ -23,7 +23,9 @@ $primary-invert: $pink-invert;
 4. Import the rest of Bulma
 */
 
-@import "node_modules/bulma/bulma.sass";
+// @import "node_modules/bulma/bulma.sass";
+
+@import url("//cdn.jsdelivr.net/npm/tuicss@2.0.1/dist/tuicss.min.css");
 
 .is-fullheight-100vh {
   height: calc(100vh - 83px);
@@ -65,4 +67,22 @@ $primary-invert: $pink-invert;
   height: auto;
   opacity: 1;
   border: 1px solid #eeeeee;
+}
+
+.tui-input {
+  background-color: #00a8a8;
+  color: #000;
+}
+
+.tui-textarea {
+  background-color: #00a8a8;
+  color: #000;
+}
+.tui-textarea:focus {
+  background-color: #ff0 !important;
+}
+
+.pad1charside {
+  padding-left: 1ch;
+  padding-right: 1ch;
 }
