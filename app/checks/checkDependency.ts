@@ -15,35 +15,17 @@ async function checkDependency(project: Project, dependency: ProjectDependency) 
       timeout: 10000,
     })
     .then((response) => {
-      if (dependency.url.includes("https://www.githubstatus.com")) {
-        if (response.data.includes("All Systems Operational")) {
-          saveSuccess(dependency.id, project.id)
-        } else {
-          saveFailure(project, dependency).catch((e) => {
-            console.warn("Failed to save failure dependencyId: " + dependency.id + e)
-          })
-        }
-      } else if (dependency.url.includes("https://status.slack.com")) {
-        if (response.data.includes("Slack is up and running")) {
-          saveSuccess(dependency.id, project.id)
-        } else {
-          saveFailure(project, dependency).catch((e) => {
-            console.warn("Failed to save failure dependencyId: " + dependency.id + e)
-          })
-        }
+      if (response.status !== 200) {
+        saveFailure(project, dependency, `received response of ${response.status}`).catch((e) => {
+          console.warn("Failed to save failure dependencyId: " + dependency.id + e)
+        })
       } else {
-        if (response.status !== 200) {
-          saveFailure(project, dependency).catch((e) => {
-            console.warn("Failed to save failure dependencyId: " + dependency.id + e)
-          })
-        } else {
-          saveSuccess(dependency.id, project.id)
-        }
+        saveSuccess(dependency.id, project.id)
       }
     })
     .catch((e) => {
       console.info("Check failed: " + dependency.url + " " + e)
-      saveFailure(project, dependency).catch((e) => {
+      saveFailure(project, dependency, e).catch((e) => {
         console.warn("Failed to save failure dependencyId: " + dependency.id + e)
       })
     })
@@ -66,7 +48,11 @@ const saveSuccess = (dependencyId: number, projectId: number) => {
     })
 }
 
-const saveFailure = async (project: Project, projectDependency: ProjectDependency) => {
+const saveFailure = async (
+  project: Project,
+  projectDependency: ProjectDependency,
+  checkError: string
+) => {
   console.info("Check failure dependencyId: " + projectDependency.id)
 
   const lastCheck = await db.check.findFirst({
@@ -92,7 +78,7 @@ const saveFailure = async (project: Project, projectDependency: ProjectDependenc
     if (project.slackWebhook !== "") {
       console.info("Sending slack notification for dependencyId: " + projectDependency.id)
       await axios.post(project.slackWebhook, {
-        text: `Dependency ${projectDependency.name} is down!`,
+        text: `Dependency ${projectDependency.name} is down! Error: ${checkError}`,
       })
     }
   }
