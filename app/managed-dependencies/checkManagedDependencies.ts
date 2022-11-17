@@ -49,7 +49,7 @@ async function saveSuccess(managedDependency: ManagedDependency) {
 }
 
 async function saveFailure(managedDependency: ManagedDependency) {
-  const lastCheck = managedDependency.checks[0]
+  const lastCheck = managedDependency.checks[managedDependency.checks.length - 1]
 
   if (
     !lastCheck ||
@@ -62,7 +62,7 @@ async function saveFailure(managedDependency: ManagedDependency) {
   await db.managedDependency.update({
     where: { id: managedDependency.id },
     data: {
-      checks: [...managedDependency.checks, { datetime: Date.now(), passed: true }],
+      checks: [...managedDependency.checks, { datetime: Date.now(), passed: false }],
     },
   })
 }
@@ -97,7 +97,7 @@ async function notifyFailures(managedDependency: ManagedDependency) {
 
     if (project.slackWebhook !== "") {
       await axios.post(project.slackWebhook, {
-        text: `Dependency ${managedDependency.name} is down!`,
+        text: `Issue detected for ${managedDependency.name}!`,
       })
     }
   }
