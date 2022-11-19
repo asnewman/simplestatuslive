@@ -5,6 +5,9 @@ import { z } from "zod"
 const UpdateProject = z.object({
   id: z.number(),
   status: z.string().nullable().optional(),
+  name: z.string().optional(),
+  email: z.string().optional(),
+  slackWebhook: z.string().optional(),
 })
 
 export default resolver.pipe(

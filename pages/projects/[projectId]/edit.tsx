@@ -12,12 +12,12 @@ import updateProject from "app/projects/mutations/updateProject"
 import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
 import { z } from "zod"
 import getProjectDependencies from "app/project-dependencies/queries/getProjectDependencies"
-import Script from "next/script"
 import createProjectDependency from "app/project-dependencies/mutations/createProjectDependency"
+import deleteProjectDependency from "app/project-dependencies/mutations/deleteProjectDependency"
 
 export const EditProject = () => {
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(
+  const [project, { refetch: refetchProject }] = useQuery(
     getProject,
     { id: projectId },
     {
@@ -31,14 +31,22 @@ export const EditProject = () => {
       where: { projectId },
     }
   )
+  const [updateProjectMutation] = useMutation(updateProject)
   const [createProjectDependencyMutation] = useMutation(createProjectDependency)
+  const [deleteProjectDependencyMutation] = useMutation(deleteProjectDependency)
+
+  const [projName, setProjName] = useState(project.name)
+  const [projEmail, setProjEmail] = useState(project.email)
+  const [projSlackhook, setProjSlackhook] = useState(project.slackWebhook)
 
   const [addProjectName, setAddProjectName] = useState("")
   const [addProjectUrl, setAddProjectUrl] = useState("")
   const [addProjectHeaders, setAddProjectHeaders] = useState("{}")
   const [addProjectData, setAddProjectData] = useState("{}")
 
-  async function addProject() {
+  const [banner, setBanner] = useState("")
+
+  async function addProjectDependency() {
     if (!projectId) return
 
     await createProjectDependencyMutation({
@@ -55,6 +63,7 @@ export const EditProject = () => {
     setAddProjectData("{}")
 
     await refetchProjectDependencies()
+    setBanner("project dependency added")
   }
 
   return (
@@ -62,25 +71,70 @@ export const EditProject = () => {
       <Head>
         <title>Edit Project {project.id}</title>
       </Head>
-      <Script src="https://cdn.jsdelivr.net/npm/tuicss@2.0.1/dist/tuicss.min.js"></Script>
       <div className="tui-panel green-168 black-255-text full-width">simplestatus</div>
+      {banner && (
+        <div
+          className="tui-panel white-168 white-255-text"
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+          }}
+        >
+          {banner}
+        </div>
+      )}
       <div className="pad1charside">
         <h1 className="green-168-text">{project.name}</h1>
         <div className="tui-window full-width">
           <fieldset className="tui-fieldset">
             <legend className="tui-legend">project details</legend>
             <div>
-              name...: <input className="tui-input" type="text" value={project.name} />
-            </div>
-            <div>
-              email...: <input className="tui-input" type="text" value={project.email} />
-            </div>
-            <div>
-              slack hook...:{" "}
-              <input className="tui-input" type="text" value={project.slackWebhook} />
+              name.........:{" "}
+              <input
+                className="tui-input"
+                type="text"
+                value={projName}
+                onChange={(e) => setProjName(e.target.value)}
+              />
             </div>
             <br />
-            <button className="tui-button">save</button>
+            <div>
+              email........:{" "}
+              <input
+                className="tui-input"
+                type="text"
+                value={projEmail}
+                onChange={(e) => setProjEmail(e.target.value)}
+              />
+            </div>
+            <br />
+            <div>
+              slack hook...:{" "}
+              <input
+                className="tui-input"
+                type="text"
+                value={projSlackhook}
+                onChange={(e) => setProjSlackhook(e.target.value)}
+              />
+            </div>
+            <br />
+            <button
+              className="tui-button"
+              onClick={async () => {
+                if (!projectId) return
+                await updateProjectMutation({
+                  id: projectId,
+                  name: projName,
+                  email: projEmail,
+                  slackWebhook: projSlackhook,
+                })
+                await refetchProject()
+                setBanner("project details updated")
+              }}
+            >
+              save
+            </button>
           </fieldset>
         </div>
         <br />
@@ -89,7 +143,7 @@ export const EditProject = () => {
           <fieldset className="tui-fieldset">
             <legend className="tui-legend">add new dependency</legend>
             <div>
-              name...:{" "}
+              name......:{" "}
               <input
                 className="tui-input"
                 type="text"
@@ -97,8 +151,9 @@ export const EditProject = () => {
                 onChange={(e) => setAddProjectName(e.target.value)}
               />
             </div>
+            <br />
             <div>
-              url...:{" "}
+              url.......:{" "}
               <input
                 className="tui-input"
                 type="text"
@@ -106,6 +161,7 @@ export const EditProject = () => {
                 onChange={(e) => setAddProjectUrl(e.target.value)}
               />
             </div>
+            <br />
             <div>
               headers...: <br />
               <textarea
@@ -115,6 +171,7 @@ export const EditProject = () => {
                 onChange={(e) => setAddProjectHeaders(e.target.value)}
               ></textarea>
             </div>
+            <br />
             <div>
               data...: <br />
               <textarea
@@ -125,7 +182,7 @@ export const EditProject = () => {
               ></textarea>
             </div>
             <br />
-            <button className="tui-button" onClick={addProject}>
+            <button className="tui-button" onClick={addProjectDependency}>
               add
             </button>
           </fieldset>
@@ -146,7 +203,18 @@ export const EditProject = () => {
               <tr key={pj.id}>
                 <td>{pj.name}</td>
                 <td>{pj.url}</td>
-                <td className="red-255-text">x</td>
+                <td>
+                  <button
+                    className="tui-button tui-modal-button red-255"
+                    onClick={async () => {
+                      await deleteProjectDependencyMutation({ id: pj.id })
+                      await refetchProjectDependencies()
+                      setBanner("project dependency deleted")
+                    }}
+                  >
+                    delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -155,30 +223,7 @@ export const EditProject = () => {
         <br />
         <br />
       </div>
-      <DeleteModal />
-      <button className="tui-button tui-modal-button" data-modal="modal">
-        ◄ Click ►
-      </button>
-      <div className="tui-overlap"></div>
     </>
-  )
-}
-
-function DeleteModal() {
-  return (
-    <div id="modal" className="tui-modal">
-      <div className="tui-window red-168">
-        <fieldset className="tui-fieldset">
-          <legend className="red-255 yellow-255-text">Alert</legend>
-          <button className="tui-button tui-modal-close-button left" data-modal="modal">
-            delete
-          </button>
-          <button className="tui-button tui-modal-close-button right" data-modal="modal">
-            cancel
-          </button>
-        </fieldset>
-      </div>
-    </div>
   )
 }
 
