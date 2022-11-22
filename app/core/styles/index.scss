@@ -75,11 +75,17 @@ $primary-invert: $pink-invert;
 }
 
 .tui-textarea {
-  background-color: #00a8a8;
-  color: #000;
+  background-color: #141414;
+  color: #fff;
 }
+
 .tui-textarea:focus {
   background-color: #ff0 !important;
+  color: #000;
+}
+
+.tui-window {
+  background-color: #000;
 }
 
 .pad1charside {

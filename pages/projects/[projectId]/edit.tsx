@@ -14,9 +14,16 @@ import { z } from "zod"
 import getProjectDependencies from "app/project-dependencies/queries/getProjectDependencies"
 import createProjectDependency from "app/project-dependencies/mutations/createProjectDependency"
 import deleteProjectDependency from "app/project-dependencies/mutations/deleteProjectDependency"
+import createManagedDependency from "app/managed-dependencies/mutations/createManagedDependency"
+import deleteManagedDependency from "app/managed-dependencies/mutations/deleteManagedDependency"
+import getManagedDependenciesForProject from "app/managed-dependencies/queries/getManagedDependenciesForProject"
+import attachManagedDependencyToProject from "app/managed-dependencies/mutations/attachManagedDependencyToProject"
+import getAllManagedDependencies from "app/managed-dependencies/queries/getAllManagedDependencies"
+import detachManagedDependencyToProject from "app/managed-dependencies/mutations/detachManagedDependencyToProject"
 
 export const EditProject = () => {
-  const projectId = useParam("projectId", "number")
+  const projectId = useParam("projectId", "number") || -1
+
   const [project, { refetch: refetchProject }] = useQuery(
     getProject,
     { id: projectId },
@@ -31,9 +38,16 @@ export const EditProject = () => {
       where: { projectId },
     }
   )
+  const [projectManagedDependencies, { refetch: refetchProjectManagedDependencies }] = useQuery(
+    getManagedDependenciesForProject,
+    projectId
+  )
+  const [allManagedDependencies] = useQuery(getAllManagedDependencies, {})
   const [updateProjectMutation] = useMutation(updateProject)
   const [createProjectDependencyMutation] = useMutation(createProjectDependency)
   const [deleteProjectDependencyMutation] = useMutation(deleteProjectDependency)
+  const [attachManagedDependencyToProjectMutation] = useMutation(attachManagedDependencyToProject)
+  const [detachManagedDependencyToProjectMutation] = useMutation(detachManagedDependencyToProject)
 
   const [projName, setProjName] = useState(project.name)
   const [projEmail, setProjEmail] = useState(project.email)
@@ -43,6 +57,9 @@ export const EditProject = () => {
   const [addProjectUrl, setAddProjectUrl] = useState("")
   const [addProjectHeaders, setAddProjectHeaders] = useState("{}")
   const [addProjectData, setAddProjectData] = useState("{}")
+
+  const [addManagedDepSelect, setAddManagedDepSelect] = useState("select")
+  const [addManagedDepId, setAddManagedDepId] = useState(-1)
 
   const [banner, setBanner] = useState("")
 
@@ -64,6 +81,18 @@ export const EditProject = () => {
 
     await refetchProjectDependencies()
     setBanner("project dependency added")
+  }
+
+  async function addManagedDep() {
+    if (!projectId) return
+
+    await attachManagedDependencyToProjectMutation({
+      managedDependencyId: addManagedDepId,
+      projectId,
+    })
+
+    await refetchProjectManagedDependencies()
+    setBanner("managed dependency added")
   }
 
   return (
@@ -139,9 +168,10 @@ export const EditProject = () => {
         </div>
         <br />
         <br />
+        <h2 className="green-168-text">project dependencies</h2>
         <div className="tui-window full-width">
           <fieldset className="tui-fieldset">
-            <legend className="tui-legend">add new dependency</legend>
+            <legend className="tui-legend">add new project dependency</legend>
             <div>
               name......:{" "}
               <input
@@ -189,7 +219,6 @@ export const EditProject = () => {
         </div>
         <br />
         <br />
-        <h2 className="green-168-text">project dependencies</h2>
         <table className="tui-table full-width">
           <thead>
             <tr>
@@ -209,6 +238,70 @@ export const EditProject = () => {
                     onClick={async () => {
                       await deleteProjectDependencyMutation({ id: pj.id })
                       await refetchProjectDependencies()
+                      setBanner("project dependency deleted")
+                    }}
+                  >
+                    delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <br />
+        <h2 className="green-168-text">managed dependencies</h2>
+        <div className="tui-window full-width">
+          <fieldset className="tui-fieldset">
+            <legend className="tui-legend">add new managed dependency</legend>
+            <div>
+              managed dependency.......:{" "}
+              <li className="tui-dropdown">
+                <button className="tui-button">{addManagedDepSelect}</button>
+                <div className="tui-dropdown-content">
+                  <ul>
+                    {allManagedDependencies.map((md) => (
+                      <li
+                        key={md.id}
+                        onClick={() => {
+                          setAddManagedDepSelect(md.name)
+                          setAddManagedDepId(md.id)
+                        }}
+                      >
+                        <a href="#!">{md.name}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            </div>
+            <br />
+            <button className="tui-button" onClick={() => addManagedDep()}>
+              add
+            </button>
+          </fieldset>
+        </div>
+        <br />
+        <br />
+        <table className="tui-table full-width">
+          <thead>
+            <tr>
+              <th>name</th>
+              <th>delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projectManagedDependencies.map((pmd) => (
+              <tr key={pmd.id}>
+                <td>{pmd.name}</td>
+                <td>
+                  <button
+                    className="tui-button tui-modal-button red-255"
+                    onClick={async () => {
+                      await detachManagedDependencyToProjectMutation({
+                        projectId,
+                        managedDependencyId: pmd.id,
+                      })
+                      await refetchProjectManagedDependencies()
                       setBanner("project dependency deleted")
                     }}
                   >
