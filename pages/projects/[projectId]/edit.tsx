@@ -100,7 +100,12 @@ export const EditProject = () => {
       <Head>
         <title>Edit Project {project.id}</title>
       </Head>
-      <div className="tui-panel green-168 black-255-text full-width">simplestatus</div>
+      <div
+        className="tui-panel green-168 black-255-text full-width pad1charside"
+        style={{ paddingTop: 3, paddingBottom: 3 }}
+      >
+        simplestatus
+      </div>
       {banner && (
         <div
           className="tui-panel white-168 white-255-text"
@@ -115,7 +120,7 @@ export const EditProject = () => {
       )}
       <div className="pad1charside">
         <h1 className="green-168-text">{project.name}</h1>
-        <div className="tui-window full-width">
+        <div className="tui-window full-width black-255">
           <fieldset className="tui-fieldset">
             <legend className="tui-legend">project details</legend>
             <div>
@@ -169,7 +174,7 @@ export const EditProject = () => {
         <br />
         <br />
         <h2 className="green-168-text">project dependencies</h2>
-        <div className="tui-window full-width">
+        <div className="tui-window full-width black-255 black-255">
           <fieldset className="tui-fieldset">
             <legend className="tui-legend">add new project dependency</legend>
             <div>
@@ -230,7 +235,9 @@ export const EditProject = () => {
           <tbody>
             {projectDependencies.map((pj) => (
               <tr key={pj.id}>
-                <td>{pj.name}</td>
+                <td>
+                  <span className="pad1charside">{pj.name}</span>
+                </td>
                 <td>{pj.url}</td>
                 <td>
                   <button
@@ -250,7 +257,7 @@ export const EditProject = () => {
         </table>
         <br />
         <h2 className="green-168-text">managed dependencies</h2>
-        <div className="tui-window full-width">
+        <div className="tui-window full-width black-255">
           <fieldset className="tui-fieldset">
             <legend className="tui-legend">add new managed dependency</legend>
             <div>

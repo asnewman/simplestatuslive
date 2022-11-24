@@ -61,7 +61,7 @@ const StatusPage = () => {
       return (
         <tr key={managedDependency.name}>
           <td>{managedDependency.name}</td>
-          <td>{lastCheck.passed ? "🟢" : "🔴"}</td>
+          <td>{lastCheck?.passed ? "🟢" : "🔴"}</td>
           <td>
             {managedDependency.checks.slice(-10).map((check: any) => (
               <div key={check.datetime} className="hover">
@@ -80,22 +80,31 @@ const StatusPage = () => {
       <Head>
         <title>{project.name} status</title>
       </Head>
-      <div className="container is-fullheight-100vh is-max-desktop px-5">
-        <h1 className="title is-1 mt-4">{project.name}</h1>
+      <div className="container is-fullheight-100vh">
+        <h1 className="white-255-text" style={{ fontSize: 28 }}>
+          {project.name}
+        </h1>
         {isTherePotentialIssue ? (
-          <div className="notification is-warning">
-            Dependency issues detected. There may be interruptions in this service.
+          <div className="tui-window red-255 full-width">
+            <p className="pad1charside">
+              Dependency issues detected. There may be interruptions to this service.
+            </p>
           </div>
         ) : (
-          <div className="notification is-success">All dependencies are functional.</div>
+          <div className="tui-window green-255 full-width">
+            <p className="pad1charside">All dependencies are functional.</p>
+          </div>
         )}
+
         {project.status && (
           <div className="block">
             <strong>Status - </strong>
             {project.status}
           </div>
         )}
-        <table className="table is-fullwidth">
+        <br />
+        <br />
+        <table className="tui-table full-width">
           <thead>
             <tr>
               <th>Dependency</th>
