@@ -13,6 +13,7 @@ import getManagedDependenciesForProject from "app/managed-dependencies/queries/g
 import attachManagedDependencyToProject from "app/managed-dependencies/mutations/attachManagedDependencyToProject"
 import getAllManagedDependencies from "app/managed-dependencies/queries/getAllManagedDependencies"
 import detachManagedDependencyToProject from "app/managed-dependencies/mutations/detachManagedDependencyToProject"
+import TopBanner from "app/core/components/TopBanner"
 
 export const EditProject = () => {
   const projectId = useParam("projectId", "number") || -1
@@ -46,10 +47,10 @@ export const EditProject = () => {
   const [projEmail, setProjEmail] = useState(project.email)
   const [projSlackhook, setProjSlackhook] = useState(project.slackWebhook)
 
-  const [addProjectName, setAddProjectName] = useState("")
-  const [addProjectUrl, setAddProjectUrl] = useState("")
-  const [addProjectHeaders, setAddProjectHeaders] = useState("{}")
-  const [addProjectData, setAddProjectData] = useState("{}")
+  const [addProjectDepName, setAddProjectDepName] = useState("")
+  const [addProjectDepUrl, setAddProjectDepUrl] = useState("")
+  const [addProjectDepHeaders, setAddProjectDepHeaders] = useState("{}")
+  const [addProjectDepData, setAddProjectDepData] = useState("{}")
 
   const [addManagedDepSelect, setAddManagedDepSelect] = useState("select")
   const [addManagedDepId, setAddManagedDepId] = useState(-1)
@@ -60,17 +61,17 @@ export const EditProject = () => {
     if (!projectId) return
 
     await createProjectDependencyMutation({
-      name: addProjectName,
-      url: addProjectUrl,
-      headers: JSON.parse(addProjectHeaders),
-      data: JSON.parse(addProjectData),
+      name: addProjectDepName,
+      url: addProjectDepUrl,
+      headers: JSON.parse(addProjectDepHeaders),
+      data: JSON.parse(addProjectDepData),
       projectId,
     })
 
-    setAddProjectName("")
-    setAddProjectUrl("")
-    setAddProjectHeaders("{}")
-    setAddProjectData("{}")
+    setAddProjectDepName("")
+    setAddProjectDepUrl("")
+    setAddProjectDepHeaders("{}")
+    setAddProjectDepData("{}")
 
     await refetchProjectDependencies()
     setBanner("project dependency added")
@@ -93,12 +94,7 @@ export const EditProject = () => {
       <Head>
         <title>Edit Project {project.id}</title>
       </Head>
-      <div
-        className="tui-panel green-168 black-255-text full-width pad1charside"
-        style={{ paddingTop: 3, paddingBottom: 3 }}
-      >
-        simplestatus
-      </div>
+      <TopBanner />
       {banner && (
         <div
           className="tui-panel white-168 white-255-text"
@@ -175,8 +171,8 @@ export const EditProject = () => {
               <input
                 className="tui-input"
                 type="text"
-                value={addProjectName}
-                onChange={(e) => setAddProjectName(e.target.value)}
+                value={addProjectDepName}
+                onChange={(e) => setAddProjectDepName(e.target.value)}
               />
             </div>
             <br />
@@ -185,8 +181,8 @@ export const EditProject = () => {
               <input
                 className="tui-input"
                 type="text"
-                value={addProjectUrl}
-                onChange={(e) => setAddProjectUrl(e.target.value)}
+                value={addProjectDepUrl}
+                onChange={(e) => setAddProjectDepUrl(e.target.value)}
               />
             </div>
             <br />
@@ -195,8 +191,8 @@ export const EditProject = () => {
               <textarea
                 className="tui-textarea full-width"
                 rows={4}
-                value={addProjectHeaders}
-                onChange={(e) => setAddProjectHeaders(e.target.value)}
+                value={addProjectDepHeaders}
+                onChange={(e) => setAddProjectDepHeaders(e.target.value)}
               ></textarea>
             </div>
             <br />
@@ -205,8 +201,8 @@ export const EditProject = () => {
               <textarea
                 className="tui-textarea full-width"
                 rows={4}
-                value={addProjectData}
-                onChange={(e) => setAddProjectData(e.target.value)}
+                value={addProjectDepData}
+                onChange={(e) => setAddProjectDepData(e.target.value)}
               ></textarea>
             </div>
             <br />

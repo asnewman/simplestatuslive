@@ -1,191 +1,55 @@
-import { Routes } from "@blitzjs/next"
-import Link from "next/link"
-import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
-import Layout from "app/core/layouts/Layout"
+import TopBanner from "app/core/components/TopBanner"
 import createProject from "app/projects/mutations/createProject"
-import { FORM_ERROR } from "app/projects/components/ProjectForm"
-import { z } from "zod"
-import LabeledTextField from "app/core/components/LabeledTextField"
-import Form from "app/core/components/Form"
+import Head from "next/head"
+import { useRouter } from "next/router"
 import { useState } from "react"
-import LabeledTextArea from "app/core/components/LabeledTextArea"
-
-interface Dependency {
-  url: string
-  name: string
-  headers?: Object
-  data?: Object
-}
-
-interface RawDependency extends Dependency {
-  url: string
-  name: string
-  headers?: string
-  data?: string
-}
 
 const NewProjectPage = () => {
   const router = useRouter()
+  const [projName, setProjName] = useState("")
+
   const [createProjectMutation] = useMutation(createProject)
-  const [dependencies, setDependencies] = useState<Dependency[]>([])
-  const [showDependencyModal, setShowDependencyModal] = useState(false)
-  const [modalError, setModalError] = useState("")
-
-  const saveDependency = (values: RawDependency) => {
-    const newDependencies = [...dependencies]
-    let headers: Dependency["headers"] = {}
-    let data: Dependency["data"] = {}
-    try {
-      if (values.headers) {
-        headers = JSON.parse(values.headers)
-      }
-      if (values.data) {
-        data = JSON.parse(values.data)
-      }
-    } catch (e) {
-      setModalError("Headers and Data must be in JSON format.")
-      return false
-    }
-    newDependencies.push({ ...values, headers, data })
-    setDependencies(newDependencies)
-    return true
-  }
 
   return (
-    <Layout title={"Create New Project"}>
-      <h1 className="title is-1 mt-4">Create New Project</h1>
+    <>
+      <Head>
+        <title>Add project</title>
+      </Head>
+      <TopBanner />
+      <br />
+      <br />
+      <div className="pad1charside">
+        <div className="tui-window full-width black-255">
+          <fieldset className="tui-fieldset">
+            <legend className="tui-legend">new project</legend>
+            <div>
+              name.........:{" "}
+              <input
+                className="tui-input"
+                type="text"
+                value={projName}
+                onChange={(e) => setProjName(e.target.value)}
+              />
+            </div>
+            <br />
+            <button
+              className="tui-button"
+              disabled={projName.length === 0 || Boolean(projName.match(/(?:(?!\s)\W)+/))}
+              onClick={async () => {
+                const res = await createProjectMutation({
+                  name: projName,
+                })
 
-      <Form
-        submitText="Create Project"
-        schema={z.object({
-          name: z.string(),
-        })}
-        initialValues={{}}
-        onSubmit={async (values) => {
-          if (dependencies.length === 0) {
-            return {
-              [FORM_ERROR]: "You must have at least one dependency.",
-            }
-          }
-
-          try {
-            const project = await createProjectMutation(values)
-            await router.push(Routes.ShowProjectPage({ projectId: project.id }))
-          } catch (error: any) {
-            console.error(error)
-            return {
-              [FORM_ERROR]: error.toString(),
-            }
-          }
-        }}
-      >
-        <LabeledTextField name="name" label="Name" placeholder="Name" />
-        <div>
-          <button
-            className="button mb-4"
-            onClick={() => {
-              setShowDependencyModal(true)
-            }}
-          >
-            Add dependency
-          </button>
-        </div>
-        {dependencies.map((d, idx) => (
-          <SavedDependency
-            key={idx}
-            {...d}
-            onDelete={() => {
-              const newDependencies = [...dependencies]
-              newDependencies.splice(idx, 1)
-              setDependencies(newDependencies)
-            }}
-          />
-        ))}
-      </Form>
-      <DependencyModal
-        showDependencyModal={showDependencyModal}
-        setShowDependencyModal={setShowDependencyModal}
-        saveDependency={saveDependency}
-        modalError={modalError}
-      />
-      <p>
-        <Link href={Routes.ProjectsPage()}>
-          <a>Projects</a>
-        </Link>
-      </p>
-    </Layout>
-  )
-}
-
-interface SavedDependencyProps extends Dependency {
-  onDelete: () => void
-}
-
-const SavedDependency = (props: SavedDependencyProps) => {
-  return (
-    <div className="message">
-      <div className="message-header">
-        <p>{props.name}</p>
-        <button className="delete" aria-label="delete" onClick={props.onDelete}></button>
-      </div>
-      <div className="message-body">{props.url}</div>
-    </div>
-  )
-}
-
-const DependencyModal = ({
-  showDependencyModal,
-  setShowDependencyModal,
-  saveDependency,
-  modalError,
-}: {
-  showDependencyModal: boolean
-  setShowDependencyModal: (val: boolean) => void
-  saveDependency: (values: RawDependency) => boolean
-  modalError: string
-}) => {
-  return (
-    <div className={`modal ${showDependencyModal ? "is-active" : ""}`}>
-      <div
-        className="modal-background"
-        onClick={() => {
-          setShowDependencyModal(false)
-        }}
-      ></div>
-      <div className="modal-content">
-        <div className="box">
-          <h2 className="title is-2">Add Dependency</h2>
-          {modalError && <p className="notification is-danger">{modalError}</p>}
-          <Form
-            submitText="Save"
-            schema={z.object({
-              name: z.string(),
-              url: z.string().trim().url(),
-            })}
-            onSubmit={(values) => {
-              if (saveDependency(values)) {
-                setShowDependencyModal(false)
-              }
-            }}
-          >
-            <LabeledTextField name="name" label="Name" placeholder="Name" />
-            <LabeledTextField name="url" label="Url" placeholder="Url" />
-            <LabeledTextArea
-              name="headers"
-              label="Headers (optional)"
-              placeholder="Must be JSON format"
-            />
-            <LabeledTextArea
-              name="data"
-              label="Data (optional)"
-              placeholder="Must be JSON format"
-            />
-          </Form>
+                await router.push(`/projects/${res.id}/edit`)
+              }}
+            >
+              create
+            </button>
+          </fieldset>
         </div>
       </div>
-      <button className="modal-close is-large" aria-label="close"></button>
-    </div>
+    </>
   )
 }
 

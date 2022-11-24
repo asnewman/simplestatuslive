@@ -13,7 +13,6 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
         <title>{title || "simplestatus"}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Script src="https://cdn.jsdelivr.net/npm/tuicss@2.0.1/dist/tuicss.min.js"></Script>
       {children}
     </>
   )
