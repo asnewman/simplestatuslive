@@ -37,15 +37,21 @@ const StatusPage = () => {
       if (!dependency) return <></>
       return (
         <tr key={dependency.name}>
-          <td>{dependency.name}</td>
-          <td>{checks[0]?.pass ? "🟢" : "🔴"}</td>
           <td>
-            {checks.map((check) => (
-              <div key={check.id} className="hover">
-                <a href="#">{check.pass ? "🟢" : "🔴"}</a>
-                <div className="popup">{check.datetime.toString()}</div>
-              </div>
-            ))}
+            <span className="pad1charside">{dependency.name}</span>
+          </td>
+          <td>
+            <span className="pad1charside">{checks[0]?.pass ? "🟢" : "🔴"}</span>
+          </td>
+          <td>
+            <span className="pad1charside">
+              {checks.map((check) => (
+                <div key={check.id} className="hover">
+                  <a href="#">{check.pass ? "🟢" : "🔴"}</a>
+                  <div className="popup">{check.datetime.toString()}</div>
+                </div>
+              ))}
+            </span>
           </td>
         </tr>
       )
@@ -60,15 +66,21 @@ const StatusPage = () => {
 
       return (
         <tr key={managedDependency.name}>
-          <td>{managedDependency.name}</td>
-          <td>{lastCheck?.passed ? "🟢" : "🔴"}</td>
           <td>
-            {managedDependency.checks.slice(-10).map((check: any) => (
-              <div key={check.datetime} className="hover">
-                <a href="#">{check.passed ? "🟢" : "🔴"}</a>
-                <div className="popup">{new Date(check.datetime).toString()}</div>
-              </div>
-            ))}
+            <span className="pad1charside">{managedDependency.name}</span>
+          </td>
+          <td>
+            <span className="pad1charside">{lastCheck?.passed ? "🟢" : "🔴"}</span>
+          </td>
+          <td>
+            <span className="pad1charside">
+              {managedDependency.checks.slice(-10).map((check: any) => (
+                <div key={check.datetime} className="hover">
+                  <a href="#">{check.passed ? "🟢" : "🔴"}</a>
+                  <div className="popup">{new Date(check.datetime).toString()}</div>
+                </div>
+              ))}
+            </span>
           </td>
         </tr>
       )

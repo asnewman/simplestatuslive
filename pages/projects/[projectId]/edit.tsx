@@ -1,21 +1,14 @@
 import { Suspense, useState } from "react"
-import { Routes } from "@blitzjs/next"
 import Head from "next/head"
-import Link from "next/link"
-import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
 import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import updateProject from "app/projects/mutations/updateProject"
-import { ProjectForm, FORM_ERROR } from "app/projects/components/ProjectForm"
-import { z } from "zod"
 import getProjectDependencies from "app/project-dependencies/queries/getProjectDependencies"
 import createProjectDependency from "app/project-dependencies/mutations/createProjectDependency"
 import deleteProjectDependency from "app/project-dependencies/mutations/deleteProjectDependency"
-import createManagedDependency from "app/managed-dependencies/mutations/createManagedDependency"
-import deleteManagedDependency from "app/managed-dependencies/mutations/deleteManagedDependency"
 import getManagedDependenciesForProject from "app/managed-dependencies/queries/getManagedDependenciesForProject"
 import attachManagedDependencyToProject from "app/managed-dependencies/mutations/attachManagedDependencyToProject"
 import getAllManagedDependencies from "app/managed-dependencies/queries/getAllManagedDependencies"
@@ -238,18 +231,22 @@ export const EditProject = () => {
                 <td>
                   <span className="pad1charside">{pj.name}</span>
                 </td>
-                <td>{pj.url}</td>
                 <td>
-                  <button
-                    className="tui-button tui-modal-button red-255"
-                    onClick={async () => {
-                      await deleteProjectDependencyMutation({ id: pj.id })
-                      await refetchProjectDependencies()
-                      setBanner("project dependency deleted")
-                    }}
-                  >
-                    delete
-                  </button>
+                  <span className="pad1charside">{pj.url}</span>
+                </td>
+                <td>
+                  <span className="pad1charside">
+                    <button
+                      className="tui-button tui-modal-button red-255"
+                      onClick={async () => {
+                        await deleteProjectDependencyMutation({ id: pj.id })
+                        await refetchProjectDependencies()
+                        setBanner("project dependency deleted")
+                      }}
+                    >
+                      delete
+                    </button>
+                  </span>
                 </td>
               </tr>
             ))}
@@ -299,21 +296,25 @@ export const EditProject = () => {
           <tbody>
             {projectManagedDependencies.map((pmd) => (
               <tr key={pmd.id}>
-                <td>{pmd.name}</td>
                 <td>
-                  <button
-                    className="tui-button tui-modal-button red-255"
-                    onClick={async () => {
-                      await detachManagedDependencyToProjectMutation({
-                        projectId,
-                        managedDependencyId: pmd.id,
-                      })
-                      await refetchProjectManagedDependencies()
-                      setBanner("project dependency deleted")
-                    }}
-                  >
-                    delete
-                  </button>
+                  <span className="pad1charside">{pmd.name}</span>
+                </td>
+                <td>
+                  <span className="pad1charside">
+                    <button
+                      className="tui-button tui-modal-button red-255"
+                      onClick={async () => {
+                        await detachManagedDependencyToProjectMutation({
+                          projectId,
+                          managedDependencyId: pmd.id,
+                        })
+                        await refetchProjectManagedDependencies()
+                        setBanner("project dependency deleted")
+                      }}
+                    >
+                      delete
+                    </button>
+                  </span>
                 </td>
               </tr>
             ))}
