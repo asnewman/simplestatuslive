@@ -1,6 +1,5 @@
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import Layout from "app/core/layouts/Layout"
 import getProject from "app/projects/queries/getProject"
 import getProjectDependencies from "app/project-dependencies/queries/getProjectDependencies"
 import getProjectDependencyChecks from "app/checks/queries/getProjectDependencyChecks"
@@ -97,13 +96,13 @@ const StatusPage = () => {
           {project.name}
         </h1>
         {isTherePotentialIssue ? (
-          <div className="tui-window red-255 full-width">
+          <div className="tui-window red-168 full-width">
             <p className="pad1charside">
               Dependency issues detected. There may be interruptions to this service.
             </p>
           </div>
         ) : (
-          <div className="tui-window green-255 full-width">
+          <div className="tui-window green-168 full-width">
             <p className="pad1charside">All dependencies are functional.</p>
           </div>
         )}
@@ -140,8 +139,5 @@ const StatusPage = () => {
     </>
   )
 }
-
-StatusPage.authenticate = false
-StatusPage.getLayout = (page) => <Layout>{page}</Layout>
 
 export default StatusPage
