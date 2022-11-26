@@ -14,5 +14,8 @@ export default resolver.pipe(resolver.zod(GetProject), async ({ id }) => {
 
   if (!project) throw new NotFoundError()
 
-  return project
+  return {
+    id: project.id,
+    name: project.name,
+  }
 })

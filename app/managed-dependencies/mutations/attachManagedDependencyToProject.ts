@@ -10,7 +10,15 @@ const AttachManagedDependencyToProject = z.object({
 export default resolver.pipe(
   resolver.zod(AttachManagedDependencyToProject),
   resolver.authorize(),
-  async (input) => {
+  async (input, ctx) => {
+    const project = await db.project.findFirst({
+      where: { id: input.projectId, userId: ctx.session.userId },
+    })
+
+    if (!project) {
+      throw new Error("you don't have permission to do this")
+    }
+
     await db.managedDependenciesOnProjects.create({
       data: {
         projectId: input.projectId,

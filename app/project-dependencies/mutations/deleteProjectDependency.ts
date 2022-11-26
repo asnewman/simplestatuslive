@@ -1,20 +1,19 @@
-import { resolver } from "@blitzjs/rpc";
-import db from "db";
-import { z } from "zod";
+import { resolver } from "@blitzjs/rpc"
+import db from "db"
+import { z } from "zod"
 
 const DeleteProjectDependency = z.object({
   id: z.number(),
-});
+})
 
 export default resolver.pipe(
   resolver.zod(DeleteProjectDependency),
   resolver.authorize(),
-  async ({ id }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+  async ({ id }, ctx) => {
     const projectDependency = await db.projectDependency.deleteMany({
-      where: { id },
-    });
+      where: { id, userId: ctx.session.userId },
+    })
 
-    return projectDependency;
+    return projectDependency
   }
-);
+)

@@ -14,7 +14,7 @@ const CreateProjectDependency = z.object({
 export default resolver.pipe(
   resolver.zod(CreateProjectDependency),
   resolver.authorize(),
-  async (input) => {
+  async (input, ctx) => {
     const project = await db.project.findFirst({ where: { id: input.projectId } })
 
     if (!project) {
@@ -23,7 +23,7 @@ export default resolver.pipe(
 
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const projectDependency = await db.projectDependency.create({
-      data: input,
+      data: { ...input, userId: ctx.session.userId },
     })
 
     checkDependency(project, projectDependency).catch((e) => {

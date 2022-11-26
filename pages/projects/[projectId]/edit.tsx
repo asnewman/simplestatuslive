@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
 import Layout from "app/core/layouts/Layout"
-import getProject from "app/projects/queries/getProject"
+import getProjectSecure from "app/projects/queries/getProjectSecure"
 import updateProject from "app/projects/mutations/updateProject"
 import getProjectDependencies from "app/project-dependencies/queries/getProjectDependencies"
 import createProjectDependency from "app/project-dependencies/mutations/createProjectDependency"
@@ -20,7 +20,7 @@ export const EditProject = () => {
   const projectId = useParam("projectId", "number") || -1
 
   const [project, { refetch: refetchProject }] = useQuery(
-    getProject,
+    getProjectSecure,
     { id: projectId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
