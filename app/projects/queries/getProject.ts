@@ -17,5 +17,6 @@ export default resolver.pipe(resolver.zod(GetProject), async ({ id }) => {
   return {
     id: project.id,
     name: project.name,
+    status: project.status,
   }
 })

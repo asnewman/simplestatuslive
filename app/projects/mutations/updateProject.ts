@@ -14,7 +14,7 @@ export default resolver.pipe(
   resolver.zod(UpdateProject),
   resolver.authorize(),
   async ({ id, ...data }, ctx) => {
-    const project = await db.project.update({ where: { id, userId: ctx.session.userId }, data })
+    const project = await db.project.updateMany({ where: { id, userId: ctx.session.userId }, data })
 
     return project
   }
