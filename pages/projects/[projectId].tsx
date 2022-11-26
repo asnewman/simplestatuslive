@@ -36,7 +36,6 @@ export const Project = () => {
           onClick={async () => {
             if (window.confirm("This will be deleted")) {
               await deleteProjectMutation({ id: project.id })
-              await router.push(Routes.ProjectsPage())
             }
           }}
           style={{ marginLeft: "0.5rem" }}
