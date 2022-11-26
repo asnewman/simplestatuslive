@@ -1,3 +1,4 @@
+import Link from "next/link"
 import React from "react"
 
 export default function TopBanner() {
@@ -6,7 +7,7 @@ export default function TopBanner() {
       className="tui-panel green-168 black-255-text full-width pad1charside"
       style={{ paddingTop: 3, paddingBottom: 3 }}
     >
-      simplestatus
+      <Link href={`/`}>simplestatus</Link>
     </div>
   )
 }
