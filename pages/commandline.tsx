@@ -148,6 +148,10 @@ function Commandline(props) {
           status: status as string,
         })
 
+        if (!updatedProject) {
+          return "Failed"
+        }
+
         return (
           <span>
             Successfully updated! Here are the details:
@@ -183,6 +187,10 @@ function Commandline(props) {
           id: projectId,
           status: null,
         })
+
+        if (!updatedProject) {
+          return "Failed"
+        }
 
         return (
           <span>

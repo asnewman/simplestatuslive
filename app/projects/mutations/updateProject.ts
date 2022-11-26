@@ -16,6 +16,6 @@ export default resolver.pipe(
   async ({ id, ...data }, ctx) => {
     const project = await db.project.updateMany({ where: { id, userId: ctx.session.userId }, data })
 
-    return project
+    return await db.project.findFirst({ where: { id } })
   }
 )
