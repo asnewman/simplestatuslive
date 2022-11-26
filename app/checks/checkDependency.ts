@@ -23,11 +23,34 @@ async function checkDependency(project: Project, dependency: ProjectDependency) 
         saveSuccess(dependency.id, project.id)
       }
     })
-    .catch((e) => {
-      console.info("Check failed: " + dependency.url + " " + e)
-      saveFailure(project, dependency, e).catch((e) => {
-        console.warn("Failed to save failure dependencyId: " + dependency.id + e)
-      })
+    .catch(() => {
+      // Retry once
+      axios
+        .get(dependency.url, {
+          headers:
+            Object.entries(dependency.headers || {}).length === 0
+              ? undefined
+              : (dependency.headers as AxiosRequestHeaders),
+          data: Object.entries(dependency.data || {}).length === 0 ? undefined : dependency.data,
+          timeout: 10000,
+        })
+        .then((response) => {
+          if (response.status !== 200) {
+            saveFailure(project, dependency, `received response of ${response.status}`).catch(
+              (e) => {
+                console.warn("Failed to save failure dependencyId: " + dependency.id + e)
+              }
+            )
+          } else {
+            saveSuccess(dependency.id, project.id)
+          }
+        })
+        .catch((e) => {
+          console.info("Check failed: " + dependency.url + " " + e)
+          saveFailure(project, dependency, e).catch((e) => {
+            console.warn("Failed to save failure dependencyId: " + dependency.id + e)
+          })
+        })
     })
 }
 
