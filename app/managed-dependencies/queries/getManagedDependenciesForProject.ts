@@ -2,7 +2,7 @@ import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
-export default resolver.pipe(resolver.authorize(), async (projectId: number) => {
+export default resolver.pipe(async (projectId: number) => {
   const managedDependenciesOnProject = await db.managedDependenciesOnProjects.findMany({
     where: { projectId },
   })
