@@ -1,69 +1,28 @@
-import { Suspense } from "react";
-import { Routes } from "@blitzjs/next";
-import Head from "next/head";
-import Link from "next/link";
-import { usePaginatedQuery } from "@blitzjs/rpc";
-import { useRouter } from "next/router";
-import Layout from "app/core/layouts/Layout";
-import getProjects from "app/projects/queries/getProjects";
+import Head from "next/head"
+import Link from "next/link"
+import { usePaginatedQuery } from "@blitzjs/rpc"
+import getProjects from "app/projects/queries/getProjects"
+import TopBanner from "app/core/components/TopBanner"
 
-const ITEMS_PER_PAGE = 100;
-
-export const ProjectsList = () => {
-  const router = useRouter();
-  const page = Number(router.query.page) || 0;
-  const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
-    orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  });
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } });
-  const goToNextPage = () => router.push({ query: { page: page + 1 } });
+export const Projects = () => {
+  const [projects] = usePaginatedQuery(getProjects, {})
 
   return (
-    <div>
-      <ul>
-        {projects.map((project) => (
-          <li key={project.id}>
-            <Link href={Routes.ShowProjectPage({ projectId: project.id })}>
-              <a>{project.name}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
-
-      <button disabled={page === 0} onClick={goToPreviousPage}>
-        Previous
-      </button>
-      <button disabled={!hasMore} onClick={goToNextPage}>
-        Next
-      </button>
-    </div>
-  );
-};
-
-const ProjectsPage = () => {
-  return (
-    <Layout>
+    <>
       <Head>
         <title>Projects</title>
       </Head>
-
-      <div className="is-fullheight has-background-black">
-        <h1 className="title is-3">Projects</h1>
-        <p>
-          <Link href={Routes.NewProjectPage()}>
-            <a className="button is-link">Create Project</a>
-          </Link>
-        </p>
-
-        <Suspense fallback={<div>Loading...</div>}>
-          <ProjectsList />
-        </Suspense>
+      <TopBanner />
+      <div className="pad1charside">
+        <h1 className="green-168-text">projects</h1>
+        {projects.map((p) => (
+          <div key={p.id}>
+            <Link href={`/projects/${p.id}/edit`}>{p.name}</Link>
+          </div>
+        ))}
       </div>
-    </Layout>
-  );
-};
+    </>
+  )
+}
 
-export default ProjectsPage;
+export default Projects
