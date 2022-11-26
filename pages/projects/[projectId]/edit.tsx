@@ -239,9 +239,11 @@ export const EditProject = () => {
                     <button
                       className="tui-button tui-modal-button red-255"
                       onClick={async () => {
-                        await deleteProjectDependencyMutation({ id: pj.id })
-                        await refetchProjectDependencies()
-                        setBanner("project dependency deleted")
+                        if (window.confirm("Are you sure?")) {
+                          await deleteProjectDependencyMutation({ id: pj.id })
+                          await refetchProjectDependencies()
+                          setBanner("project dependency deleted")
+                        }
                       }}
                     >
                       delete
@@ -304,12 +306,14 @@ export const EditProject = () => {
                     <button
                       className="tui-button tui-modal-button red-255"
                       onClick={async () => {
-                        await detachManagedDependencyToProjectMutation({
-                          projectId,
-                          managedDependencyId: pmd.id,
-                        })
-                        await refetchProjectManagedDependencies()
-                        setBanner("project dependency deleted")
+                        if (window.confirm("Are you sure?")) {
+                          await detachManagedDependencyToProjectMutation({
+                            projectId,
+                            managedDependencyId: pmd.id,
+                          })
+                          await refetchProjectManagedDependencies()
+                          setBanner("project dependency deleted")
+                        }
                       }}
                     >
                       delete
