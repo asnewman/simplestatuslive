@@ -14,6 +14,7 @@ import attachManagedDependencyToProject from "app/managed-dependencies/mutations
 import getAllManagedDependencies from "app/managed-dependencies/queries/getAllManagedDependencies"
 import detachManagedDependencyToProject from "app/managed-dependencies/mutations/detachManagedDependencyToProject"
 import TopBanner from "app/core/components/TopBanner"
+import Link from "next/link"
 
 export const EditProject = () => {
   const projectId = useParam("projectId", "number") || -1
@@ -109,6 +110,9 @@ export const EditProject = () => {
       )}
       <div className="pad1charside">
         <h1 className="green-168-text">{project.name}</h1>
+        <Link href={`/projects/${project.id}/status`}>[view status page]</Link>
+        <br />
+        <br />
         <div className="tui-window full-width black-255">
           <fieldset className="tui-fieldset">
             <legend className="tui-legend">project details</legend>
