@@ -85,6 +85,7 @@ async function notifyFailures(managedDependency: ManagedDependency) {
       failedCheckMailer({
         to: project.email,
         projectName: project.name,
+        projectId: project.id,
         dependencyName: managedDependency.name,
       })
         .send()
