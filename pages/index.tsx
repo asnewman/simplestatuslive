@@ -1,33 +1,49 @@
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import React from "react"
 
 const Home = () => {
   const router = useRouter()
+  const currentUser = useCurrentUser()
   return (
     <div>
       <div className="white-255-text" style={{ width: "80%", margin: "0 auto" }}>
         <h1 style={{ marginTop: 200, fontSize: 50, textAlign: "center" }}>
           Easily monitor internal and external dependencies with simplestatus
         </h1>
-        <div style={{ margin: "0 auto", width: 500, textAlign: "center" }}>
-          <button
-            className="tui-button"
-            style={{ padding: 10 }}
-            onClick={async () => {
-              await router.push("/auth/signup")
-            }}
-          >
-            Sign up for free!
-          </button>
-          <br />
-          <br />
-          <Link href="/auth/login">
-            <span className="green-255-text" style={{ cursor: "pointer" }}>
-              Already have an account? Login here.
-            </span>
-          </Link>
-        </div>
+        {currentUser ? (
+          <div style={{ margin: "0 auto", width: 500, textAlign: "center" }}>
+            <button
+              className="tui-button"
+              style={{ padding: 10 }}
+              onClick={async () => {
+                await router.push("/projects")
+              }}
+            >
+              Go to your projects
+            </button>
+          </div>
+        ) : (
+          <div style={{ margin: "0 auto", width: 500, textAlign: "center" }}>
+            <button
+              className="tui-button"
+              style={{ padding: 10 }}
+              onClick={async () => {
+                await router.push("/auth/signup")
+              }}
+            >
+              Sign up for free!
+            </button>
+            <br />
+            <br />
+            <Link href="/auth/login">
+              <span className="green-255-text" style={{ cursor: "pointer" }}>
+                Already have an account? Login here.
+              </span>
+            </Link>
+          </div>
+        )}
         <h2 style={{ marginTop: 50 }}>Features</h2>
         <ul>
           <li>- Public and private status pages for your projects and business</li>
