@@ -3,10 +3,16 @@ import email from "integrations/email"
 type FailedCheckMailer = {
   to: string
   projectName: string
+  projectId: number
   dependencyName: string
 }
 
-export function failedCheckMailer({ to, projectName, dependencyName }: FailedCheckMailer) {
+export function failedCheckMailer({
+  to,
+  projectName,
+  projectId,
+  dependencyName,
+}: FailedCheckMailer) {
   console.info("Sending failed check email to: " + to)
   // In production, set APP_ORIGIN to your production server origin
   const origin = process.env.APP_ORIGIN || process.env.BLITZ_DEV_SERVER_ORIGIN
@@ -16,8 +22,9 @@ export function failedCheckMailer({ to, projectName, dependencyName }: FailedChe
     to,
     subject: `${projectName}: Dependency ${dependencyName} has a failed.`,
     html: `
-      <p>Your project ${projectName} has a dependency that may be broken.</p>
+      <p>${projectName} has a dependency that may be broken.</p>
       <p>Dependency ${dependencyName} has failed its status check.</p>
+      <p>View ${projectName}'s status page at ${origin}/projects/${projectId}/status.</p>
     `,
   }
 

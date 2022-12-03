@@ -78,6 +78,7 @@ model Project {
   userId              Int                             @default(0)
   email               String                          @default("")
   slackWebhook        String                          @default("")
+  EmailSubscription   EmailSubscription[]
 }
 
 model Check {
@@ -124,4 +125,13 @@ model ManagedDependenciesOnProjects {
   assignedAt          DateTime          @default(now())
 
   @@id([projectId, managedDependencyId])
+}
+
+model EmailSubscription {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String
+  projectId Int
+  Project   Project? @relation(fields: [projectId], references: [id])
 }

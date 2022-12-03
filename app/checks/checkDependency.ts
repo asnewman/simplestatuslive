@@ -1,5 +1,5 @@
 import axios, { AxiosRequestHeaders } from "axios"
-import db, { Project, ProjectDependency, User } from "db"
+import db, { Project, ProjectDependency } from "db"
 import { failedCheckMailer } from "mailers/failedCheckMailer"
 
 async function checkDependency(project: Project, dependency: ProjectDependency) {
@@ -88,6 +88,7 @@ const saveFailure = async (
       failedCheckMailer({
         to: project.email,
         projectName: project.name,
+        projectId: project.id,
         dependencyName: projectDependency.name,
       })
         .send()
@@ -96,12 +97,31 @@ const saveFailure = async (
             `Failed to send email to ${project.email} for dependencyId error: ${projectDependency.id} ${e}`
           )
         })
+
+      const emailSubscriptions = await db.emailSubscription.findMany({
+        where: { projectId: project.id },
+      })
+
+      emailSubscriptions.forEach((emailSubscription) => {
+        failedCheckMailer({
+          to: emailSubscription.email,
+          projectName: project.name,
+          projectId: project.id,
+          dependencyName: projectDependency.name,
+        })
+          .send()
+          .catch((e) => {
+            console.warn(
+              `Failed to send email to ${project.email} for dependencyId error: ${projectDependency.id} ${e}`
+            )
+          })
+      })
     }
     console.debug(project)
     if (project.slackWebhook !== "") {
       console.info("Sending slack notification for dependencyId: " + projectDependency.id)
       await axios.post(project.slackWebhook, {
-        text: `Dependency ${projectDependency.name} is down! Error: ${checkError}`,
+        text: `Dependency ${projectDependency.name} is down! Error: ${checkError}. Check out ${project.name}'s status page at https://simplestat.us/projects/${project.id}/status.`,
       })
     }
   }

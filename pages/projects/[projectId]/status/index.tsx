@@ -6,8 +6,10 @@ import getProjectDependencyChecks from "app/checks/queries/getProjectDependencyC
 import Head from "next/head"
 import { useMemo } from "react"
 import getManagedDependenciesForProject from "app/managed-dependencies/queries/getManagedDependenciesForProject"
+import { useRouter } from "next/router"
 
 const StatusPage = () => {
+  const router = useRouter()
   const projectId = useParam("projectId", "number")
   const [project, {}] = useQuery(getProject, { id: projectId })
   const [{ projectDependencies: dependencies }, {}] = useQuery(getProjectDependencies, {
@@ -91,10 +93,19 @@ const StatusPage = () => {
       <Head>
         <title>{project.name} status</title>
       </Head>
-      <div className="container is-fullheight-100vh">
+      <div className="container is-fullheight-100vh" style={{ position: "relative" }}>
         <h1 className="white-255-text" style={{ fontSize: 28 }}>
           {project.name}
         </h1>
+        <button
+          className="tui-button"
+          style={{ padding: 10, position: "absolute", top: 0, right: 0 }}
+          onClick={async () => {
+            await router.push(`/projects/${project.id}/status/email`)
+          }}
+        >
+          Subscribe to updates
+        </button>
         {isTherePotentialIssue ? (
           <div className="tui-window red-168 full-width">
             <p className="pad1charside">
