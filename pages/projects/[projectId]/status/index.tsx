@@ -75,12 +75,15 @@ const StatusPage = () => {
           </td>
           <td>
             <span className="pad1charside">
-              {managedDependency.checks.slice(-10).map((check: any) => (
-                <div key={check.datetime} className="hover">
-                  <a href="#">{check.passed ? "🟢" : "🔴"}</a>
-                  <div className="popup">{new Date(check.datetime).toString()}</div>
-                </div>
-              ))}
+              {managedDependency.checks
+                .slice(-10)
+                .reverse()
+                .map((check: any) => (
+                  <div key={check.datetime} className="hover">
+                    <a href="#">{check.passed ? "🟢" : "🔴"}</a>
+                    <div className="popup">{new Date(check.datetime).toString()}</div>
+                  </div>
+                ))}
             </span>
           </td>
         </tr>
