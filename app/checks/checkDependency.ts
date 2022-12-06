@@ -97,27 +97,26 @@ const saveFailure = async (
             `Failed to send email to ${project.email} for dependencyId error: ${projectDependency.id} ${e}`
           )
         })
-
-      const emailSubscriptions = await db.emailSubscription.findMany({
-        where: { projectId: project.id },
-      })
-
-      emailSubscriptions.forEach((emailSubscription) => {
-        failedCheckMailer({
-          to: emailSubscription.email,
-          projectName: project.name,
-          projectId: project.id,
-          dependencyName: projectDependency.name,
-        })
-          .send()
-          .catch((e) => {
-            console.warn(
-              `Failed to send email to ${project.email} for dependencyId error: ${projectDependency.id} ${e}`
-            )
-          })
-      })
     }
-    console.debug(project)
+    const emailSubscriptions = await db.emailSubscription.findMany({
+      where: { projectId: project.id },
+    })
+
+    emailSubscriptions.forEach((emailSubscription) => {
+      failedCheckMailer({
+        to: emailSubscription.email,
+        projectName: project.name,
+        projectId: project.id,
+        dependencyName: projectDependency.name,
+        emailSubId: emailSubscription.id,
+      })
+        .send()
+        .catch((e) => {
+          console.warn(
+            `Failed to send email to ${project.email} for dependencyId error: ${projectDependency.id} ${e}`
+          )
+        })
+    })
     if (project.slackWebhook !== "") {
       console.info("Sending slack notification for dependencyId: " + projectDependency.id)
       await axios.post(project.slackWebhook, {

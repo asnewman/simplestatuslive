@@ -14,7 +14,7 @@ const AddStatusEmail = () => {
 
   return (
     <div className="container is-fullheight-100vh" style={{ position: "relative" }}>
-      <h1>Subscribe to updates for {project.name}</h1>
+      <h1>Subscribe to status updates for {project.name}</h1>
       <label>Email</label>
       <br />
       <input disabled={submitting} value={email} onChange={(e) => setEmail(e.target.value)} />
