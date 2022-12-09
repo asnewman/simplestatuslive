@@ -109,7 +109,7 @@ const StatusPage = () => {
           {project.name}
         </h1>
         <button
-          className="tui-button"
+          className="tui-button white-255-text"
           style={{ padding: 10, position: "absolute", top: 0, right: 0 }}
           onClick={async () => {
             await router.push(`/projects/${project.id}/status/email`)
