@@ -24,10 +24,18 @@ const StatusPage = () => {
   const isTherePotentialIssue = useMemo(() => {
     if (!checksByDependency) return false
 
-    return Object.values(checksByDependency).some((checks) => {
+    const projDepsHasIssue = Object.values(checksByDependency).some((checks) => {
       if (!checks[0]) return true
       return !checks[0].pass
     })
+
+    const managedDepsHasIssue = Object.values(managedDependencies).some((md) => {
+      const checks = md.checks as any
+      if (!checks[0]) return true
+      return !checks[checks.length - 1]?.passed
+    })
+
+    return projDepsHasIssue || managedDepsHasIssue
   }, [checksByDependency])
 
   function renderDependencies() {
@@ -110,7 +118,7 @@ const StatusPage = () => {
           Subscribe to updates
         </button>
         {isTherePotentialIssue ? (
-          <div className="tui-window red-168 full-width">
+          <div className="tui-window yellow-168 full-width">
             <p className="pad1charside">
               Dependency issues detected. There may be interruptions to this service.
             </p>
