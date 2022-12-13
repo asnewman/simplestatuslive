@@ -10,7 +10,7 @@ const Home = () => {
     <div>
       <div className="white-255-text" style={{ width: "80%", margin: "0 auto" }}>
         <h1 style={{ marginTop: 200, fontSize: 50, textAlign: "center" }}>
-          Easily monitor internal and external dependencies with simplestatus
+        Keep your uptime in the spotlight with simplestatus
         </h1>
         {currentUser ? (
           <div style={{ margin: "0 auto", width: 500, textAlign: "center" }}>
@@ -46,14 +46,11 @@ const Home = () => {
         )}
         <h2 style={{ marginTop: 50 }}>Features</h2>
         <ul>
-          <li>- Public and private status pages for your projects and business</li>
-          <li>- Indiviual endpoint monitoring for internal and external APIs</li>
-          <li>- Health check webpages to ensure your web page is always live</li>
-          <li>
-            - Managed dependencies - commonly used services like GitHub and Slack are already
-            monitored by simplestatus robots and can inform you of any downtime
-          </li>
-          <li>- Alerting via email and Slack</li>
+          <li>- Monitors user-configured and preset endpoints to detect downtime of dependencies</li>
+          <li>- Alerts users via email and slack when downtime is detected</li>
+          <li>- Provides a private or public status page for other users to see</li>
+          <li>- Helps businesses and organizations maintain high uptime and avoid potential loss of revenue and customer trust</li>
+          <li>- Can be customized to fit the specific needs of each user</li>
         </ul>
         <br />
         <br />
