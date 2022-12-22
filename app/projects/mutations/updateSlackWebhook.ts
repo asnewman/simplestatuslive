@@ -6,6 +6,7 @@ import axios from "axios";
 const UpdateProject = z.object({
   id: z.number(),
   slackCode: z.string().optional(),
+  redirectUri: z.string(),
 })
 
 export default resolver.pipe(
@@ -20,12 +21,12 @@ export default resolver.pipe(
     }
 
     const slackResponse = await axios.post("https://slack.com/api/oauth.v2.access", {
-      data: {
+      params: {
         client_id: "4492198045090.4506805403075",
         client_secret: process.env.SLACK_SECRET,
         code: data.slackCode,
         authorization_code: "incoming-webhook",
-        redirect_uri: "https://simplestat.us"
+        redirect_uri: data.redirectUri
       }
     })
 

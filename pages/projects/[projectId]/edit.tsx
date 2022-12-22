@@ -99,7 +99,7 @@ export const EditProject = () => {
 
   useEffect(function processSlackCode() {
     if (query.code && typeof query.code === "string") {
-      void updateSlackWebhookMutation({ id: projectId, slackCode: query.code ||  ""})
+      void updateSlackWebhookMutation({ id: projectId, slackCode: query.code ||  "", redirectUri: `https://simplestat.us/projects/${projectId}/edit`})
     }
   }, [projectId, query.code, updateSlackWebhookMutation])
 
