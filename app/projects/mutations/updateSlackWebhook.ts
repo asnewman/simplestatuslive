@@ -30,7 +30,7 @@ export default resolver.pipe(
       }
     })
 
-    console.log(slackResponse.data)
+    console.log(slackResponse)
 
     await db.project.updateMany({ where: { id, userId: ctx.session.userId }, data: {
       slackWebhook: slackResponse.data["incoming_webhook"].url
