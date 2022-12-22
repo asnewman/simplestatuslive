@@ -20,11 +20,13 @@ export default resolver.pipe(
     }
 
     const slackResponse = await axios.post("https://slack.com/api/oauth.v2.access", {
-      client_id: "4492198045090.4506805403075",
-      client_secret: process.env.SLACK_SECRET,
-      code: data.slackCode,
-      authorization_code: "incoming-webhook",
-      redirect_uri: "https://simplestat.us"
+      data: {
+        client_id: "4492198045090.4506805403075",
+        client_secret: process.env.SLACK_SECRET,
+        code: data.slackCode,
+        authorization_code: "incoming-webhook",
+        redirect_uri: "https://simplestat.us"
+      }
     })
 
     console.log(slackResponse.data)
