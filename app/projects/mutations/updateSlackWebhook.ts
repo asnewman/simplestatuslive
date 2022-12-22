@@ -27,6 +27,8 @@ export default resolver.pipe(
       redirect_uri: "https://simplestat.us"
     })
 
+    console.log(slackResponse)
+
     await db.project.updateMany({ where: { id, userId: ctx.session.userId }, data: {
       slackWebhook: slackResponse["incoming_webhook"].url
     } })
