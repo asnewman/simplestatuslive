@@ -22,7 +22,7 @@ export default resolver.pipe(
 
     const slackResponse = await axios.post(`https://slack.com/api/oauth.v2.access?client_id=4492198045090.4506805403075&client_secret=${process.env.SLACK_SECRET}&code=${data.slackCode}&redirect_uri=${data.redirectUri}`)
 
-    console.log(slackResponse)
+    console.log(slackResponse.data)
 
     await db.project.updateMany({ where: { id, userId: ctx.session.userId }, data: {
       slackWebhook: slackResponse.data["incoming_webhook"].url
