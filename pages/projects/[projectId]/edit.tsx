@@ -99,9 +99,9 @@ export const EditProject = () => {
 
   useEffect(function processSlackCode() {
     if (query.code && typeof query.code === "string") {
-      updateSlackWebhookMutation({ id: projectId, slackCode: query.code ||  ""})
+      void updateSlackWebhookMutation({ id: projectId, slackCode: query.code ||  ""})
     }
-  }, [])
+  }, [projectId, query.code, updateSlackWebhookMutation])
 
   return (
     <>

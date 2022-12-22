@@ -36,7 +36,7 @@ const StatusPage = () => {
     })
 
     return projDepsHasIssue || managedDepsHasIssue
-  }, [checksByDependency])
+  }, [checksByDependency, managedDependencies])
 
   function renderDependencies() {
     if (!checksByDependency || !dependencyMap) return <></>
