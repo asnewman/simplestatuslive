@@ -157,7 +157,7 @@ export const EditProject = () => {
                 type="text"
                 value={projSlackhook}
                 onChange={(e) => setProjSlackhook(e.target.value)}
-              />}{" "}<span onClick={async () => {
+              />}{" "}<span style={{cursor: "pointer"}} onClick={async () => {
                 await updateSlackWebhookMutation({ id: projectId, slackCode: "", redirectUri: `https://simplestat.us/projects/${projectId}/edit`})
               }}>❌</span>
             </div>
