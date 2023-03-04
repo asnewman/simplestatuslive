@@ -37,11 +37,15 @@ const Home = () => {
             </button>
             <br />
             <br />
-            <Link href="/auth/login">
-              <span className="green-255-text" style={{ cursor: "pointer" }}>
-                Already have an account? Login here.
-              </span>
-            </Link>
+            <button
+              className="tui-button"
+              style={{ padding: 10 }}
+              onClick={async () => {
+                await router.push("/auth/login")
+              }}
+            >
+              Log in
+            </button>
           </div>
         )}
         <h2 style={{ marginTop: 50 }}>Features</h2>
